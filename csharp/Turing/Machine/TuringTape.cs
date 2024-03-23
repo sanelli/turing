@@ -100,6 +100,8 @@ public sealed class TuringTape
     /// <param name="resetPosition"><c></c> if the cursor should be placed at the "beginning" of the tape, <c>false</c> otherwise.</param>
     public void Initialize(IEnumerable<char> initialSymbols, bool resetPosition = true)
     {
+        this.Clear();
+
         foreach (var symbol in initialSymbols)
         {
             this.SetSymbol(symbol);
