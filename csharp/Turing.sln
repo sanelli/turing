@@ -16,7 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Folder", "Solution
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{AABB680B-E400-4759-BC5C-D5B69190CB6E}"
 	ProjectSection(SolutionItems) = preProject
-		..\Samples\palindrome_even.tom = ..\Samples\palindrome_even.tom
 		..\Samples\substitute.tom = ..\Samples\substitute.tom
 	EndProjectSection
 EndProject
