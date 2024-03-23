@@ -11,6 +11,16 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 ### [csharp](https://github.com/sanelli/turing/tree/main/csharp)
 - dotnet 8
 
+### [Python](https://github.com/sanelli/turing/tree/main/python)
+- python 3.11.5
+
+### [C++](https://github.com/sanelli/turing/tree/main/cpp)
+- CMake 3.27
+- C++ 20 compiler (the script does not validate this as too many variations exists)
+
+### [Go](https://github.com/sanelli/turing/tree/main/go)
+- Go 1.21.3
+
 ## Compile and test
 ```powershell
 ./Scripts/Build.ps1       # Build all the executable
