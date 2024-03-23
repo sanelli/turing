@@ -73,7 +73,12 @@ public sealed class TuringMachine
 
         if (this.finalStates.Count < 1)
         {
-            throw new ArgumentException($"At least one final state must be provided.", nameof(this.finalStates));
+            throw new ArgumentException("At least one final state must be provided.", nameof(finalStates));
+        }
+
+        if (!this.symbols.Contains(emptySymbol))
+        {
+            throw new ArgumentException($"Empty symbol '{emptySymbol}' is not a valid symbol.", nameof(emptySymbol));
         }
 
         this.tape = new(emptySymbol);
@@ -83,32 +88,32 @@ public sealed class TuringMachine
         {
             if (string.IsNullOrWhiteSpace(transaction.From.State))
             {
-                throw new ArgumentException($"Invalid from transaction state '{transaction.From.State}': it cannot be null or white space.", nameof(this.finalStates));
+                throw new ArgumentException($"Invalid from transaction state '{transaction.From.State}': it cannot be null or white space.", nameof(transactions));
             }
 
             if (!uniqueStates.Contains(transaction.From.State))
             {
-                throw new ArgumentException($"Invalid from transaction state '{transaction.From.State}': it is not a state.", nameof(this.finalStates));
+                throw new ArgumentException($"Invalid from transaction state '{transaction.From.State}': it is not a state.", nameof(transactions));
             }
 
             if (!this.symbols.Contains(transaction.From.Symbol))
             {
-                throw new ArgumentException($"Invalid from transaction symbol '{transaction.From.Symbol}': it is not a valid symbol.", nameof(this.finalStates));
+                throw new ArgumentException($"Invalid from transaction symbol '{transaction.From.Symbol}': it is not a valid symbol.", nameof(transactions));
             }
 
             if (string.IsNullOrWhiteSpace(transaction.To.State))
             {
-                throw new ArgumentException($"Invalid to transaction state '{transaction.To.State}': it cannot be null or white space.", nameof(this.finalStates));
+                throw new ArgumentException($"Invalid to transaction state '{transaction.To.State}': it cannot be null or white space.", nameof(transactions));
             }
 
             if (!uniqueStates.Contains(transaction.To.State))
             {
-                throw new ArgumentException($"Invalid to transaction state '{transaction.To.State}': it is not a state.", nameof(this.finalStates));
+                throw new ArgumentException($"Invalid to transaction state '{transaction.To.State}': it is not a state.", nameof(transactions));
             }
 
             if (!this.symbols.Contains(transaction.To.Symbol))
             {
-                throw new ArgumentException($"Invalid to transaction symbol '{transaction.To.Symbol}': it is not a valid symbol.", nameof(this.finalStates));
+                throw new ArgumentException($"Invalid to transaction symbol '{transaction.To.Symbol}': it is not a valid symbol.", nameof(transactions));
             }
 
             this.transitions.Set(transaction.From, transaction.To);
@@ -134,7 +139,7 @@ public sealed class TuringMachine
     /// Initialize the tape and reset the status to the initial status of the machine.
     /// </summary>
     /// <param name="initialTape">The symbols to be placed on the tape.</param>
-    public void Clear(IEnumerable<char> initialTape)
+    public void Clear(ICollection<char> initialTape)
     {
         this.currentState = this.initialState;
         foreach (var symbol in initialTape)
@@ -145,7 +150,7 @@ public sealed class TuringMachine
             }
         }
 
-        this.tape.Initialize(this.symbols);
+        this.tape.Initialize(initialTape);
     }
 
     /// <summary>

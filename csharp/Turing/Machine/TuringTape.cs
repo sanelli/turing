@@ -124,7 +124,19 @@ public sealed class TuringTape
         var negative = string.Join(separator, this.negativePositions).Reverse().Trim(this.emptySymbol).Reverse();
         var positive = string.Join(separator, this.positivePositions).Trim(this.emptySymbol);
         var separatorBetweenPositiveAndNegative = negative.Length > 0 ? $"{separator}" : string.Empty;
-        return negative + separatorBetweenPositiveAndNegative + positive;
+        string result = negative + separatorBetweenPositiveAndNegative + positive;
+
+        if (result.Length > 0 && !result.StartsWith(separator))
+        {
+            result = $"{separator}{result}";
+        }
+
+        if (result.Length > 0 && !result.EndsWith(separator))
+        {
+            result = $"{result}{separator}";
+        }
+
+        return result;
     }
 
     /// <inheritdoc />

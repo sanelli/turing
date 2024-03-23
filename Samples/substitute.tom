@@ -1,0 +1,29 @@
+# Replace all a characters with b and vice-versa.
+# Replace a with b and with a.
+
+States = [ "replace", "halt" ]
+InitialState = "replace"
+FinalStates = [ "halt" ]
+Symbols = [ " ", "a", "b" ]
+EmptySymbol = " "
+
+[[Transitions]]
+State = "replace"
+Symbol = "a"
+NewState = "replace"
+NewSymbol = "b"
+Move = "right"
+
+[[Transitions]]
+State = "replace"
+Symbol = "b"
+NewState = "replace"
+NewSymbol = "a"
+Move = "right"
+
+[[Transitions]]
+State = "replace"
+Symbol = " "
+NewState = "halt"
+NewSymbol = " "
+Move = "right"

@@ -1,0 +1,16 @@
+# Check if an even string composed letters a and b is palindrome.
+# X represent the end of the string while a space represent the empty symbol.
+# Source: https://www.javatpoint.com/examples-of-turing-machine
+
+States = [ "q0", "q1", "q2", "q3", "q4", "q5", "q6", "halt" ]
+InitialState = "q0"
+FinalStates = [ "halt" ]
+Symbols = [ " ", "a", "b", "*", "X" ]
+EmptySymbol = " "
+
+[[Transitions]]
+State = "q0"
+Symbol = "a"
+NewState = "q1"
+NewSymbol = "*"
+Move = "right"
