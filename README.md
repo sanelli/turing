@@ -9,7 +9,7 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 ```
 
 ### [csharp](https://github.com/sanelli/turing/tree/main/csharp)
-- dotnet 7
+- dotnet 8
 
 ## Compile and test
 ```powershell
