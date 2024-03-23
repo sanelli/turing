@@ -4,7 +4,7 @@ from turingMachine import TuringMachine
 
 import sys
 
-def main(arv:list[str]) -> None:
+def main(arv:list[str]) -> int:
     machine:TuringMachine = TuringMachine()
     return 0
 
