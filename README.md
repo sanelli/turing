@@ -2,7 +2,7 @@
 Collection of [Turing machine](https://en.wikipedia.org/wiki/Turing_machine) interpreters written in various languages.
 
 ## Prerequisities
-Prerequisites can be validated by running the `Check.ps1` script, possibly with a list of languages to validate. If the parameter `-Languages` is not provided then all supported languages are chek. In case of failures will provide a set of links to follow to help with the installation.
+Prerequisites can be validated by running the `Check.ps1` script, possibly with a list of languages to validate. If the parameter `-Languages` is not provided then all supported languages are cheked. In case of failures will provide a set of links to follow to help with the installation.
 ```powershell
 ./Scripts/Check.ps1
 ./Scripts/Check.ps1 -Languages:$("csharp", "python", "cpp")

@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp"))
+param([string[]]$Languages = $("csharp", "python", "cpp", "go"))
 
 function Invoke-Checks() {
     $Success = $true
@@ -10,9 +10,44 @@ function Invoke-Checks() {
         $LocalSuccess = $Exists -and $CorrectVersion
         $Success = $Success -and $LocalSuccess
         Write-Succes $LocalSuccess "C#"
-        if (-not $LocalSuccess)
-        {
+        if (-not $LocalSuccess) {
             Write-Host -ForegroundColor:"Red" "Visit https://dotnet.microsoft.com/en-us/download for installation instructions"
+        }
+    }
+
+    if ("python" -in $Languages) {
+        Write-Host -ForegroundColor:"Yellow" "=== Python ==="
+        $Exists = Confirm-CommandExists "python3"
+        $CorrectVersion = Confirm-Pythong3Version 3 11
+        $LocalSuccess = $Exists -and $CorrectVersion
+        $Success = $Success -and $LocalSuccess
+        Write-Succes $LocalSuccess "Python"
+        if (-not $LocalSuccess) {
+            Write-Host -ForegroundColor:"Red" "Visit https://www.python.org/downloads for installation instructions"
+        }
+    }
+
+    if ("cpp" -in $Languages) {
+        Write-Host -ForegroundColor:"Yellow" "=== C++ ==="
+        $Exists = Confirm-CommandExists "cmake"
+        $CorrectVersion = Confirm-CMakeVersion 3 27
+        $LocalSuccess = $Exists -and $CorrectVersion
+        $Success = $Success -and $LocalSuccess
+        Write-Succes $LocalSuccess "C++"
+        if (-not $LocalSuccess) {
+            Write-Host -ForegroundColor:"Red" "Visit https://cmake.org/download/ for installation instructions"
+        }
+    }
+
+    if ("go" -in $Languages) {
+        Write-Host -ForegroundColor:"Yellow" "=== Go ==="
+        $Exists = Confirm-CommandExists "go"
+        $CorrectVersion = Confirm-GoVersion 1 21
+        $LocalSuccess = $Exists -and $CorrectVersion
+        $Success = $Success -and $LocalSuccess
+        Write-Succes $LocalSuccess "go"
+        if (-not $LocalSuccess) {
+            Write-Host -ForegroundColor:"Red" "Visit https://go.dev/doc/install for installation instructions"
         }
     }
 
@@ -56,8 +91,57 @@ function Confirm-DotnetVersion($expectedVersion) {
         }
     }
   
-    Write-Host "Require dotnet version $expectedVersion but version $version found" -ForegroundColor:Red
+    Write-Host "Require dotnet version $expectedVersion but version $version found." -ForegroundColor:Red
     return $false;
+}
+
+function Confirm-Pythong3Version([int]$expectedMajorVersion, [int]$expectedMinorVersion) {
+
+    $pythonVersion = python3 --version
+    $version = $pythonVersion -split " "
+    $versionMajorMinor = $version[1] -split "\."
+    $versionMajor = [System.Int32]::Parse($versionMajorMinor[0].Trim())
+    $versionMinor = [System.Int32]::Parse($versionMajorMinor[1].Trim())
+
+    $Success = ($versionMajor -gt $expectedMajorVersion) -or ($versionMajor -eq $expectedMajorVersion) -and ($versionMinor -ge $expectedMinorVersion)
+
+    if (-not $Success) {
+        Write-Host "Require Python3 version >= $expectedMajorVersion.$expectedMinorVersion but version $version found." -ForegroundColor:Red
+    }
+    return $Success;
+}
+
+function Confirm-CMakeVersion([int]$expectedMajorVersion, [int]$expectedMinorVersion) {
+
+    $pythonVersion = cmake --version
+    $version = $pythonVersion -split " "
+
+    $versionMajorMinor = $version[2] -split "\."
+    $versionMajor = [System.Int32]::Parse($versionMajorMinor[0].Trim())
+    $versionMinor = [System.Int32]::Parse($versionMajorMinor[1].Trim())
+
+    $Success = ($versionMajor -gt $expectedMajorVersion) -or ($versionMajor -eq $expectedMajorVersion) -and ($versionMinor -ge $expectedMinorVersion)
+
+    if (-not $Success) {
+        Write-Host "Require cmake version >= $expectedMajorVersion.$expectedMinorVersion but version $version found." -ForegroundColor:Red
+    }
+    return $Success;
+}
+
+function Confirm-GoVersion([int]$expectedMajorVersion, [int]$expectedMinorVersion) {
+
+    $pythonVersion = go version
+    $version = $pythonVersion -split " "
+    $versionMajorMinor = $version[2].substring(2) -split "\."
+    $versionMajor = [System.Int32]::Parse($versionMajorMinor[0].Trim())
+    $versionMinor = [System.Int32]::Parse($versionMajorMinor[1].Trim())
+
+    $Success = ($versionMajor -gt $expectedMajorVersion) -or ($versionMajor -eq $expectedMajorVersion) -and ($versionMinor -ge $expectedMinorVersion)
+
+    if (-not $Success) {
+        Write-Host "Require cmake version >= $expectedMajorVersion.$expectedMinorVersion but version $version found." -ForegroundColor:Red
+    }
+    return $Success;
 }
 
 Invoke-Checks
