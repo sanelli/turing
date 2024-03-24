@@ -1,6 +1,7 @@
 from enum import Enum
+from turingTyping import TuringSymbol, raiseIfInvalidSymbol
 
-from turingTyping import TuringSymbol
+import collections.abc;
 
 class TuringTapeMove(Enum):
     Stay = 0
@@ -15,8 +16,7 @@ class TuringTape():
 
     def __init__(self, emptySymbol:TuringSymbol) -> None:
 
-        if len(emptySymbol) != 1:
-            raise ValueError("emptySymbol mush have length 1")
+        raiseIfInvalidSymbol(emptySymbol, "emptySymbol")
 
         self._emptySymbol = emptySymbol
         self._cursorPosition = 0
@@ -24,8 +24,7 @@ class TuringTape():
         self._positivePositions = []
 
     def setSymbol(self, symbol:TuringSymbol) -> None:
-        if len(symbol) != 1:
-            raise ValueError("emptySymbol mush have length 1")
+        raiseIfInvalidSymbol(symbol)
         (positions, index) = self._getIndexForCurrentPosition()
         self._ensureTapeHasSpaceForIndex(positions, index)
         positions[index] = symbol
@@ -56,11 +55,10 @@ class TuringTape():
         self._negativePositions = []
         self._positivePositions = []
 
-    def initialize(self, initialSymbols:list[TuringSymbol], resetPosition:bool = True) -> None:
+    def initialize(self, initialSymbols:collections.abc.Iterable[TuringSymbol], resetPosition:bool = True) -> None:
         self.clear()
         for symbol in initialSymbols:
-            if len(symbol) != 1:
-                raise ValueError("All symbols must have length 1")
+            raiseIfInvalidSymbol(symbol)
             self.setSymbol(symbol)
             self.moveRight()
     
@@ -70,12 +68,13 @@ class TuringTape():
     def toString(self, separator:str = '|') -> str:
         negative = separator.join(self._negativePositions).strip()
         positive = separator.join(self._positivePositions).strip()
-        separatorBetweenPositiveAndNegative = separator if negative.Length > 0 else ""
+        separatorBetweenPositiveAndNegative = separator if len(negative) > 0 else ""
         result = negative + separatorBetweenPositiveAndNegative + positive
         if len(result) > 0 and not result.startswith(separator):
             result = separator + result
         if len(result) > 0 and not result.endswith(separator):
             result += separator
+        return result
 
     def __str__(self) -> str:
         return self.toString()
@@ -87,5 +86,5 @@ class TuringTape():
             return (self._negativePositions, -self._cursorPosition + 1)
         
     def _ensureTapeHasSpaceForIndex(self, positions:list[TuringSymbol], index:int) -> None:
-        while len(positions) < index:
+        while len(positions) <= index:
             positions.append(self._emptySymbol)

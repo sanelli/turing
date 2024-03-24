@@ -12,7 +12,7 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 - dotnet 8
 
 ### [Python](https://github.com/sanelli/turing/tree/main/python)
-- python 3.11.5
+- python 3.12
 
 ### [C++](https://github.com/sanelli/turing/tree/main/cpp)
 - CMake 3.27
