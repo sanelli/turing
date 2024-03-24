@@ -19,16 +19,16 @@ turing_machine::turing_tape::turing_tape(char emtpySymbol)
 void turing_tape::set(char symbol)
 {
     ensureTapeHasSpaceForPosition();
-    auto index = getIndexForCurrentPosition();
-    std::vector<char> &positions = getPositionsVector();
+    const auto index = getIndexForCurrentPosition();
+    auto &positions = getPositionsVector();
     positions[index] = symbol;
 }
 
 char turing_tape::get()
 {
     ensureTapeHasSpaceForPosition();
-    auto index = getIndexForCurrentPosition();
-    std::vector<char> &positions = getPositionsVector();
+    const auto index = getIndexForCurrentPosition();
+    auto &positions = getPositionsVector();
     return positions[index];
 }
 
@@ -72,8 +72,8 @@ int turing_tape::getIndexForCurrentPosition()
 
 void turing_tape::ensureTapeHasSpaceForPosition()
 {
-    std::vector<char> &positions = getPositionsVector();
-    auto index = getIndexForCurrentPosition();
+    auto &positions = getPositionsVector();
+    const auto index = getIndexForCurrentPosition();
 
     while (positions.size() <= static_cast<std::size_t>(index))
     {
@@ -85,7 +85,7 @@ std::vector<char> &turing_tape::getPositionsVector()
 {
     if (currentPosition >= 0)
     {
-        return this->positivePositions;
+        return positivePositions;
     }
-    return this->negativePositions;
+    return negativePositions;
 }
