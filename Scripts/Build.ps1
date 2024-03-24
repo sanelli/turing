@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python"))
+param([string[]]$Languages = $("csharp", "python", "cpp"))
 
 $Success = $true
 
@@ -10,6 +10,7 @@ if ("csharp" -in $Languages) {
     dotnet build ./Turing.Tests -c:Release
     $Success = $Success -and $?
     Pop-Location
+    Write-Host ""
 }
 
 if ("python" -in $Languages) {
@@ -17,13 +18,25 @@ if ("python" -in $Languages) {
     Push-Location ./python
     $Success = $Success -and $?
     Pop-Location
+    Write-Host ""
+}
+
+if ("cpp" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== C++ ==="
+    Push-Location ./cpp
+    cmake .
+    $Success = $Success -and $?
+    cmake --build .
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
 }
 
 if ($Success) {
-    Write-Host "`n`nBuild successful!" -ForegroundColor:Green
+    Write-Host "`nBuild successful!" -ForegroundColor:Green
     exit 0
 }
 else {
-    Write-Host "`n`nBuild failed" -ForegroundColor:Red
+    Write-Host "`nBuild failed" -ForegroundColor:Red
     exit 1
 }

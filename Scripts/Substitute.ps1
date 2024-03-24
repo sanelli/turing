@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp","python"))
+param([string[]]$Languages = $("csharp","python","cpp"))
 
 $Success = $true
 
@@ -19,6 +19,16 @@ if ("python" -in $Languages) {
     Pop-Location
     Write-Host ""
 }
+
+if ("cpp" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== C++ ==="
+    Push-Location ./cpp
+    ./turing toml "../samples/Substitute.tom" "abba"
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
+}
+
 
 if ($Success) {
     Write-Host "`nRun successful!" -ForegroundColor:Green
