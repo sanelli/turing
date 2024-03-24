@@ -28,8 +28,8 @@ namespace turing_machine
         void move(turing_tape_move m);
 
         void clear();
-        template <typename TIterator>
-        void initialize(TIterator begin, TIterator end, bool resetPosition = true)
+        template <typename TIteratorBegin, typename TIteratorEnd>
+        void initialize(TIteratorBegin begin, TIteratorEnd end, bool resetPosition = true)
         {
             clear();
             for (auto iterator = begin; iterator != end; iterator++)
