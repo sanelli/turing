@@ -18,7 +18,7 @@ function Invoke-Checks() {
     if ("python" -in $Languages) {
         Write-Host -ForegroundColor:"Yellow" "=== Python ==="
         $Exists = Confirm-CommandExists "python3"
-        $CorrectVersion = Confirm-Pythong3Version 3 12
+        $CorrectVersion = Confirm-Pythong3Version 3 11
         $LocalSuccess = $Exists -and $CorrectVersion
         $Success = $Success -and $LocalSuccess
         Write-Succes $LocalSuccess "Python"

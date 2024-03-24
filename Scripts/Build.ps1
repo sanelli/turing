@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp"))
+param([string[]]$Languages = $("csharp", "python"))
 
 $Success = $true
 
@@ -8,6 +8,13 @@ if ("csharp" -in $Languages) {
     dotnet build ./Turing -c:Release
     $Success = $Success -and $?
     dotnet build ./Turing.Tests -c:Release
+    $Success = $Success -and $?
+    Pop-Location
+}
+
+if ("python" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== Python ==="
+    Push-Location ./python
     $Success = $Success -and $?
     Pop-Location
 }

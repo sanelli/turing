@@ -13,11 +13,11 @@ def main(argv:list[str]) -> int:
     machine = turingMachineFromFormatString(argv[0], Path(argv[1]).read_text())
     machine.clear([symbol for symbol in argv[2]])
 
-    print(f"Initial tape: {machine.tape()}")
+    print(f"Initial tape: |{machine.tape()}|")
     machine.run()
 
-    print(f"Final tape: {machine.tape()}")
-    print(f"Final state: {machine.currentState()}")
+    print(f"Final tape: |{machine.tape()}|")
+    print(f"Final state: '{machine.currentState()}'")
     return 0 if machine.halted() else 1
 
 if __name__ == "__main__":
