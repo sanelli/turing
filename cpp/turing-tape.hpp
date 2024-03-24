@@ -7,9 +7,9 @@ namespace turing_machine
 {
     enum class turing_tape_move
     {
+        None,
         Left,
         Right,
-        None
     };
 
     class turing_tape
