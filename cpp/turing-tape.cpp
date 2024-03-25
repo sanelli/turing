@@ -6,9 +6,9 @@
 #include <stdexcept>
 #include <sstream>
 
-using namespace turing_machine;
+using namespace turing;
 
-turing_machine::turing_tape::turing_tape(char emtpySymbol)
+turing::turing_tape::turing_tape(char emtpySymbol)
 {
     this->emtpySymbol = emtpySymbol;
 

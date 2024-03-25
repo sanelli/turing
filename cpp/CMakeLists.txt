@@ -14,8 +14,8 @@ endif()
 
 add_subdirectory(libs)
 
-add_executable(turing turing.cpp turing-tape.cpp)
-add_executable(turing-tests turing-tests.cpp turing-tape.cpp)
+add_executable(turing turing.cpp turing-tape.cpp turing-tranisition-function.cpp)
+add_executable(turing-tests turing-tests.cpp turing-tape.cpp turing-tranisition-function.cpp)
 target_link_libraries(turing-tests PRIVATE Catch2::Catch2WithMain)
 
 add_test(NAME turing-tests COMMAND turing-tests)

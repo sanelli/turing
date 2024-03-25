@@ -3,7 +3,7 @@
 #include <vector>
 #include <tuple>
 
-namespace turing_machine
+namespace turing
 {
     enum class turing_tape_move
     {
