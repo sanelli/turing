@@ -29,10 +29,10 @@ namespace turing_machine
 
         void clear();
         template <typename TIteratorBegin, typename TIteratorEnd>
-        void initialize(TIteratorBegin begin, TIteratorEnd end, bool resetPosition = true)
+        void initialize(TIteratorBegin first, TIteratorEnd last, bool resetPosition = true)
         {
             clear();
-            for (auto iterator = begin; iterator != end; iterator++)
+            for (auto iterator = first; iterator != last; iterator++)
             {
                 set(*iterator);
                 move(turing_tape_move::Right);
@@ -43,6 +43,8 @@ namespace turing_machine
                 currentPosition = 0;
             }
         }
+
+        std::string str(char separator = '|') const;
 
     private:
         int getIndexForCurrentPosition();

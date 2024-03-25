@@ -4,6 +4,7 @@
 #include <tuple>
 #include <utility>
 #include <stdexcept>
+#include <sstream>
 
 using namespace turing_machine;
 
@@ -58,6 +59,56 @@ void turing_tape::clear()
     positivePositions.clear();
     negativePositions.clear();
     currentPosition = 0;
+}
+
+std::string turing_tape::str(char separator) const
+{
+    std::stringstream output;
+
+    // If the sape is not empty I need to add the separator at the beginning and at the end of the string
+    if(negativePositions.size() <= 0 && negativePositions.size() <= 0)
+    {
+        return "";
+    }
+
+    // Head separator.
+    output << separator;
+
+    // Add negative tape reverted
+    bool first = true;
+    for(auto iterator = negativePositions.rbegin() ; iterator != negativePositions.rend() ; iterator++)
+    {
+        if(!first){
+            output << separator;
+        }
+
+        output << *iterator;
+        first = false;
+    }
+
+    // if first is negative then something has been added at least once 
+    // and need to add se separator between negative and positive
+    if(!first) 
+    {
+        output << separator;
+    }
+
+    // Add positive tape reverted
+    first = true;
+    for(auto iterator = positivePositions.begin() ; iterator != positivePositions.end() ; iterator++)
+    {
+        if(!first){
+            output << separator;
+        }
+
+        output << *iterator;
+        first = false;
+    }
+
+    // Final separator.
+    output << separator;
+
+    return  output.str();
 }
 
 int turing_tape::getIndexForCurrentPosition()
