@@ -20,7 +20,7 @@ namespace turing
         turing_transition_function transitions;
 
     public:
-        template <typename TStateIterator, typename TSymbolIterator>
+        template <typename TStateIterator, typename TSymbolIterator, typename TTransitionsIterator>
         turing_machine(
             TStateIterator first_state,
             TStateIterator last_state,
@@ -29,10 +29,9 @@ namespace turing
             TStateIterator last_final_state,
             TSymbolIterator first_symbol,
             TSymbolIterator last_symbol,
-            turing_symbol empty_symbol
-            // TTransitionsIterator first_tranistion,
-            // TTransitionsIterator last_transition
-            ) : tape(' '), transitions("")
+            turing_symbol empty_symbol,
+            TTransitionsIterator first_transition,
+            TTransitionsIterator last_transition) : tape(' '), transitions("")
         {
             // Validate states
             std::set<turing_state> states;
@@ -81,12 +80,43 @@ namespace turing
             }
 
             throwIfSymbolIsUnknown(empty_symbol, symbols, "Empty symbol");
-
-            // Initialize (again) tape and transitions
             tape = {empty_symbol};
+
+            // Handle transitions
             transitions = {*final_states.begin()};
+            for (auto transitionIt = first_transition; transitionIt != last_transition; transitionIt++)
+            {
+                std::pair<turing_transition_function_from, turing_transition_function_to> transition = *transitionIt;
+                auto from = transition.first;
+                auto to = transition.second;
+                throwIfStateIsInvalid(from.state, "Transition origin state");
+                throwIfStateIsUnknown(from.state, states, "Transition origin state");
+                throwIfSymbolIsUnknown(from.symbol, symbols, "Transition origin symbol");
+                throwIfStateIsInvalid(to.state, "Transition target state");
+                throwIfStateIsUnknown(to.state, states, "Transition target state");
+                throwIfSymbolIsUnknown(to.symbol, symbols, "Transition target symbol");
+
+                transitions.set(from, to);
+            }
+
+            if (transitions.empty())
+            {
+                throw std::invalid_argument("At least one transition must be provided.");
+            }
+        }
+
+        template <typename TSymbolIterator>
+        void clear(TSymbolIterator first, TSymbolIterator last)
+        {
+            current_state = initial_state;
+            tape.clear();
+            tape.initialize(first, last);
         }
 
         void run();
+        void step();
+        bool halted() const;
+        turing_state get_current_state() const;
+        std::string get_tape() const;
     };
 }

@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <sstream>
 
+#include <iostream>
+
 using namespace turing;
 
 turing::turing_tape::turing_tape(turing_symbol emtpySymbol)
@@ -66,7 +68,7 @@ std::string turing_tape::str(turing_symbol separator) const
     std::stringstream output;
 
     // If the sape is not empty I need to add the separator at the beginning and at the end of the string
-    if(negativePositions.size() <= 0 && negativePositions.size() <= 0)
+    if (negativePositions.size() <= 0 && positivePositions.size() <= 0)
     {
         return "";
     }
@@ -76,9 +78,15 @@ std::string turing_tape::str(turing_symbol separator) const
 
     // Add negative tape reverted
     auto first = true;
-    for(auto iterator = negativePositions.rbegin() ; iterator != negativePositions.rend() ; iterator++)
+    for (auto iterator = negativePositions.rbegin(); iterator != negativePositions.rend(); iterator++)
     {
-        if(!first){
+        if (*iterator == this->emtpySymbol)
+        {
+            continue;
+        }
+
+        if (!first)
+        {
             output << separator;
         }
 
@@ -86,18 +94,24 @@ std::string turing_tape::str(turing_symbol separator) const
         first = false;
     }
 
-    // if first is negative then something has been added at least once 
+    // if first is negative then something has been added at least once
     // and need to add se separator between negative and positive
-    if(!first) 
+    if (!first)
     {
         output << separator;
     }
 
     // Add positive tape reverted
     first = true;
-    for(auto iterator = positivePositions.begin() ; iterator != positivePositions.end() ; iterator++)
+    for (auto iterator = positivePositions.begin(); iterator != positivePositions.end(); iterator++)
     {
-        if(!first){
+        if (*iterator == this->emtpySymbol)
+        {
+            continue;
+        }
+        
+        if (!first)
+        {
             output << separator;
         }
 
@@ -108,7 +122,7 @@ std::string turing_tape::str(turing_symbol separator) const
     // Final separator.
     output << separator;
 
-    return  output.str();
+    return output.str();
 }
 
 int turing_tape::getIndexForCurrentPosition()

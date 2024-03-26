@@ -32,7 +32,12 @@ turing_transition_function_to turing_transition_function::get(turing_transition_
     return transition->second;
 }
 
+bool turing_transition_function::empty() const
+{
+    return transitions.empty();
+}
+
 inline bool turing::operator<(const turing_transition_function_from &lhs, const turing_transition_function_from &rhs)
 {
-    return (lhs.status < rhs.status) || (lhs.status == rhs.status && lhs.symbol < rhs.symbol);
+    return (lhs.state < rhs.state) || (lhs.state == rhs.state && lhs.symbol < rhs.symbol);
 }
