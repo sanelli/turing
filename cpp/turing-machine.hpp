@@ -32,7 +32,7 @@ namespace turing
             // turing_symbol initial_symbol,
             // TTransitionsIterator first_tranistion,
             // TTransitionsIterator last_transition
-        )
+            ) : tape(' '), transitions("")
         {
             // Validate states
             std::set<turing_state> states;
