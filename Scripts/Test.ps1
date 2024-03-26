@@ -23,7 +23,7 @@ if ("python" -in $Languages) {
 if ("cpp" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== C++ ==="
     Push-Location ./cpp
-    ./brainfuck-tests
+    ./turing-tests
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
