@@ -164,6 +164,11 @@ public sealed class TuringMachine
     /// </summary>
     public void Step()
     {
+        if (this.HasHalted())
+        {
+            return;
+        }
+
         var (nextState, symbol, move) = this.transitions.Get(this.currentState, this.tape.GetSymbol());
         this.currentState = nextState;
         this.tape.SetSymbol(symbol);
