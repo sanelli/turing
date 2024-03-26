@@ -8,7 +8,7 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 ./Scripts/Check.ps1 -Languages:$("csharp", "python", "cpp")
 ```
 
-### [csharp](https://github.com/sanelli/turing/tree/main/csharp)
+### [C#](https://github.com/sanelli/turing/tree/main/csharp)
 - dotnet 8
 
 ### [Python](https://github.com/sanelli/turing/tree/main/python)
