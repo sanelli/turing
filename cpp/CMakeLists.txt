@@ -14,10 +14,10 @@ endif()
 
 add_subdirectory(libs)
 
-add_executable(turing turing.cpp turing-tape.cpp turing-transition-function.cpp turing-machine.cpp turing-io.cpp)
+add_executable(turing turing.cpp turing-tape.cpp turing-transition-function.cpp turing-machine.cpp turing-io.cpp turing-typing.cpp)
 target_link_libraries(turing PRIVATE toml11::toml11)
 
-add_executable(turing-tests turing-tests.cpp turing-tape.cpp turing-transition-function.cpp turing-machine.cpp turing-io.cpp)
+add_executable(turing-tests turing-tests.cpp turing-tape.cpp turing-transition-function.cpp turing-machine.cpp turing-io.cpp turing-typing.cpp)
 target_link_libraries(turing-tests PRIVATE Catch2::Catch2WithMain)
 target_link_libraries(turing-tests PRIVATE toml11::toml11)
 

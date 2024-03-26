@@ -26,6 +26,16 @@ std::unique_ptr<turing::turing_machine> turing::make_turing_machine_from_toml(co
     const auto data = toml::parse(iss);
 
     std::set<turing_state> states;
+    std::set<turing_state> final_states;
+    std::set<turing_symbol> symbols;
 
-    return std::make_unique<turing_machine>(states.begin(), states.end(), "");
+    return std::make_unique<turing_machine>(
+        states.begin(),
+        states.end(),
+        "",
+        final_states.begin(),
+        final_states.end(),
+        symbols.begin(),
+        symbols.end(),
+        ' ');
 }

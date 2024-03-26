@@ -20,16 +20,16 @@ namespace turing
         turing_transition_function transitions;
 
     public:
-        template <typename TStateIterator>
+        template <typename TStateIterator, typename TSymbolIterator>
         turing_machine(
             TStateIterator first_state,
             TStateIterator last_state,
-            turing_state initial_state
-            // TStateIterator first_final_state,
-            // TStateIterator last_final_state,
-            // TSymbolIterator first_symbol,
-            // TSymbolIterator last_symbol,
-            // turing_symbol initial_symbol,
+            turing_state initial_state,
+            TStateIterator first_final_state,
+            TStateIterator last_final_state,
+            TSymbolIterator first_symbol,
+            TSymbolIterator last_symbol,
+            turing_symbol empty_symbol
             // TTransitionsIterator first_tranistion,
             // TTransitionsIterator last_transition
             ) : tape(' '), transitions("")
@@ -39,29 +39,52 @@ namespace turing
             for (auto stateIt = first_state; stateIt != last_state; stateIt++)
             {
                 turing_state state = *stateIt;
-                if (state == "")
-                {
-                    throw std::invalid_argument("State cannot be an empty string");
-                }
+                throwIfStateIsInvalid(state);
 
                 states.insert(state);
             }
-
-            if (initial_state == "")
+            if (states.empty())
             {
-                throw std::invalid_argument("Initial state cannot be empty");
+                throw std::invalid_argument("The list of states cannot be empty");
             }
 
-            if (states.find(initial_state) == states.end())
-            {
-                throw std::invalid_argument("Initial state does not belong to the set of accepted states");
-            }
-
+            // Validate initial state
+            throwIfStateIsInvalid(initial_state, "Initial state");
+            throwIfStateIsUnknown(initial_state, states, "Initial state");
             this->current_state = initial_state;
             this->initial_state = initial_state;
 
-            tape = {' '};
-            transitions = {""};
+            // Validate final states
+            for (auto finalStateIt = first_final_state; finalStateIt != last_final_state; finalStateIt++)
+            {
+                turing_state final_state = *finalStateIt;
+                throwIfStateIsInvalid(final_state, "Final state");
+                throwIfStateIsUnknown(final_state, states, "Final state");
+
+                final_states.insert(final_state);
+            }
+
+            if (final_states.empty())
+            {
+                throw std::invalid_argument("The list of final states cannot be empty");
+            }
+
+            // Validate symbols
+            for (auto symbolIt = first_symbol; symbolIt != last_symbol; symbolIt++)
+            {
+                turing_symbol symbol = *symbolIt;
+                symbols.insert(symbol);
+            }
+            if (symbols.empty())
+            {
+                throw std::invalid_argument("The list of symbols cannot be empty");
+            }
+
+            throwIfSymbolIsUnknown(empty_symbol, symbols, "Empty symbol");
+
+            // Initialize (again) tape and transitions
+            tape = {empty_symbol};
+            transitions = {*final_states.begin()};
         }
 
         void run();
