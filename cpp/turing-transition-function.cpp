@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "turing-tape.hpp"
-#include "turing-tranisition-function.hpp"
+#include "turing-transition-function.hpp"
 
 using namespace turing;
 
@@ -34,15 +34,5 @@ turing_transition_function_to turing_transition_function::get(turing_transition_
 
 inline bool turing::operator<(const turing_transition_function_from &lhs, const turing_transition_function_from &rhs)
 {
-    if (lhs.status < rhs.status)
-    {
-        return true;
-    }
-
-    if (lhs.status == rhs.status)
-    {
-        return lhs.symbol < rhs.symbol;
-    }
-
-    return false;
+    return (lhs.status < rhs.status) || (lhs.status == rhs.status && lhs.symbol < rhs.symbol);
 }

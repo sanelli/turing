@@ -8,7 +8,7 @@
 
 using namespace turing;
 
-turing::turing_tape::turing_tape(char emtpySymbol)
+turing::turing_tape::turing_tape(turing_symbol emtpySymbol)
 {
     this->emtpySymbol = emtpySymbol;
 
@@ -17,7 +17,7 @@ turing::turing_tape::turing_tape(char emtpySymbol)
     negativePositions.clear();
 }
 
-void turing_tape::set(char symbol)
+void turing_tape::set(turing_symbol symbol)
 {
     ensureTapeHasSpaceForPosition();
     const auto index = getIndexForCurrentPosition();
@@ -25,7 +25,7 @@ void turing_tape::set(char symbol)
     positions[index] = symbol;
 }
 
-char turing_tape::get()
+turing_symbol turing_tape::get()
 {
     ensureTapeHasSpaceForPosition();
     const auto index = getIndexForCurrentPosition();
@@ -61,7 +61,7 @@ void turing_tape::clear()
     currentPosition = 0;
 }
 
-std::string turing_tape::str(char separator) const
+std::string turing_tape::str(turing_symbol separator) const
 {
     std::stringstream output;
 
@@ -75,7 +75,7 @@ std::string turing_tape::str(char separator) const
     output << separator;
 
     // Add negative tape reverted
-    bool first = true;
+    auto first = true;
     for(auto iterator = negativePositions.rbegin() ; iterator != negativePositions.rend() ; iterator++)
     {
         if(!first){
@@ -132,7 +132,7 @@ void turing_tape::ensureTapeHasSpaceForPosition()
     }
 }
 
-std::vector<char> &turing_tape::getPositionsVector()
+std::vector<turing_symbol> &turing_tape::getPositionsVector()
 {
     if (currentPosition >= 0)
     {

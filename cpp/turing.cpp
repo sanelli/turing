@@ -1,8 +1,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "turing-tape.hpp"
+#include "turing-io.hpp"
+#include "turing-machine.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -16,8 +19,8 @@ int main(int argc, char* argv[])
 
     std::ifstream stream(argv[2]);
     std::string program((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-
-    std::cout << program << std::endl;
+    auto machine = turing::make_turing_machine(argv[1], program);
+    machine->run();
 
     return EXIT_SUCCESS;
 }
