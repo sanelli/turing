@@ -84,10 +84,12 @@ class TuringMachine():
         return self._currentState in self._finalStates
     
     def step(self):
-        transition = self._transitions.get(self._currentState, self._tape.getSymbol())
-        self._currentState = transition[0]
-        self._tape.setSymbol(transition[1])
-        self._tape.move(transition[2])
+
+        if not self.halted():
+            transition = self._transitions.get(self._currentState, self._tape.getSymbol())
+            self._currentState = transition[0]
+            self._tape.setSymbol(transition[1])
+            self._tape.move(transition[2])
 
     def run(self):
         while not self.halted():
