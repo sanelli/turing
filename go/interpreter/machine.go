@@ -90,7 +90,7 @@ func (machine *TuringMachine) GetTape() string {
 func (machine *TuringMachine) Clear(initialSymbols []TuringSymbol) {
 
 	for _, symbol := range initialSymbols {
-		if slices.Contains(machine.symbols, symbol) {
+		if !slices.Contains(machine.symbols, symbol) {
 			panic(fmt.Sprintf("Unknown symbol '%c'", symbol))
 		}
 	}
@@ -117,4 +117,14 @@ func (machine *TuringMachine) Run() {
 	for !machine.Halted() {
 		machine.Step()
 	}
+}
+
+func (machine *TuringMachine) Print() {
+	fmt.Printf("Initial state: %s\n", machine.currentState)
+	fmt.Printf("Final states: [%s]\n", StatesToString(machine.finalStates))
+	fmt.Printf("Symbols: [%s]\n", SymbolsToString(machine.symbols))
+	fmt.Printf("Current state: %s\n", machine.currentState)
+	fmt.Printf("Tape: |%s|\n", machine.GetTape())
+	fmt.Print("Transitions\n")
+	machine.transitions.Print()
 }

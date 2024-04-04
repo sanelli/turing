@@ -70,7 +70,8 @@ func (tape *TuringTape) ToString(separator rune) string {
 	result := ""
 
 	first := true
-	for index := len(tape.negativePositions) - 1; index >= 0; {
+	for index := len(tape.negativePositions) - 1; index >= 0; index-- {
+
 		if !first {
 			result += string(separator)
 		}
@@ -79,7 +80,7 @@ func (tape *TuringTape) ToString(separator rune) string {
 		first = false
 	}
 
-	for index := 0; index < len(tape.positivePositions); {
+	for index := 0; index < len(tape.positivePositions); index++ {
 		if !first {
 			result += string(separator)
 		}

@@ -47,3 +47,9 @@ func (tape *TuringTransitionFunction) Get(from TuringTransitionFunctionFrom) Tur
 
 	return transition
 }
+
+func (tape *TuringTransitionFunction) Print() {
+	for from, to := range tape.transitions {
+		fmt.Printf("   - (%s, %c) -> (%s, %c, %s)\n", from.State, from.Symbol, to.State, to.Symbol, to.Move.ToString())
+	}
+}

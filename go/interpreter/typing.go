@@ -30,6 +30,34 @@ func (move TapeMove) ToString() string {
 	return "unknown"
 }
 
+func StatesToString(states []TuringState) string {
+	result := ""
+	first := true
+	for _, state := range states {
+		if !first {
+			result += ", "
+		}
+		result += string(state)
+		first = false
+	}
+
+	return result
+}
+
+func SymbolsToString(symbols []TuringSymbol) string {
+	result := ""
+	first := true
+	for _, symbol := range symbols {
+		if !first {
+			result += ", "
+		}
+		result += string(symbol)
+		first = false
+	}
+
+	return result
+}
+
 func ToTapeMove(str string) TapeMove {
 	switch str {
 	case "none":
