@@ -1,5 +1,7 @@
 package interpreter
 
+import "fmt"
+
 type TuringState string
 type TuringSymbol rune
 type TapeMove byte
@@ -21,9 +23,22 @@ func (move TapeMove) ToString() string {
 	case None:
 		return "none"
 	case Left:
-		return "right"
+		return "left"
 	case Right:
 		return "right"
 	}
 	return "unknown"
+}
+
+func ToTapeMove(str string) TapeMove {
+	switch str {
+	case "none":
+		return None
+	case "left":
+		return Left
+	case "right":
+		return Right
+	}
+
+	panic(fmt.Sprintf("Unknown move '%s'", str))
 }

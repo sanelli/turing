@@ -21,7 +21,7 @@ func main() {
 		initialTape[index] = interpreter.TuringSymbol(symbol)
 	}
 
-	turingMachine := interpreter.LoadTuringMachine(os.Args[1], os.Args[2])
+	turingMachine := interpreter.LoadTuringMachinFromFile(os.Args[1], os.Args[2])
 	turingMachine.Clear(initialTape)
 
 	fmt.Printf("Initial tape: %s", turingMachine.GetTape())
