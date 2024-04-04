@@ -25,10 +25,10 @@ func main() {
 	//turingMachine.Print()
 	turingMachine.Clear(initialTape)
 
-	fmt.Printf("Initial tape: %s\n", turingMachine.GetTape())
+	fmt.Printf("Initial tape: |%s|\n", turingMachine.GetTape())
 	turingMachine.Run()
-	fmt.Printf("Final tape: %s\n", turingMachine.GetTape())
-	fmt.Printf("Final state: %s\n", turingMachine.GetCurrentState())
+	fmt.Printf("Final tape: |%s|\n", turingMachine.GetTape())
+	fmt.Printf("Final state: '%s'\n", turingMachine.GetCurrentState())
 
 	os.Exit(0)
 }
