@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python", "cpp"))
+param([string[]]$Languages = $("csharp", "python", "cpp", "go"))
 
 $Success = $true
 
@@ -27,6 +27,15 @@ if ("cpp" -in $Languages) {
     cmake .
     $Success = $Success -and $?
     cmake --build .
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
+}
+
+if ("go" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== Go ==="
+    Push-Location ./go
+    go build
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""

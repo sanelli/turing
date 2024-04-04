@@ -1,11 +1,11 @@
-param([string[]]$Languages = $("csharp","python","cpp"))
+param([string[]]$Languages = $("csharp","python","cpp","go"))
 
 $Success = $true
 
 if ("csharp" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== C# ==="
     Push-Location ./csharp
-    dotnet run --project ./Turing -c:Release --no-build toml "../samples/Substitute.tom" "abba"
+    dotnet run --project ./Turing -c:Release --no-build toml "../Samples/Substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -14,7 +14,7 @@ if ("csharp" -in $Languages) {
 if ("python" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Python ==="
     Push-Location ./python
-    python3 ./turing.py toml "../samples/Substitute.tom" "abba"
+    python3 ./turing.py toml "../Samples/Substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -23,7 +23,16 @@ if ("python" -in $Languages) {
 if ("cpp" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== C++ ==="
     Push-Location ./cpp
-    ./turing toml "../samples/Substitute.tom" "abba"
+    ./turing toml "../Samples/Substitute.tom" "abba"
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
+}
+
+if ("go" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== Go ==="
+    Push-Location ./go
+    ./turing toml "../Samples/Substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
