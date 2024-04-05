@@ -1,6 +1,6 @@
 unit TuringMachine;
 interface
-    uses TuringTyping, TuringTape;
+    uses TuringTyping, TuringTape, TuringTransitionFunction;
     type 
         TTuringMachine = record
             InitialState    : TTuringState;
