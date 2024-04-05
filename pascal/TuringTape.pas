@@ -13,6 +13,8 @@ interface
     procedure InitializeTape(var tape : TTuringTape; EmptySymbol: TTuringSymbol);
     procedure SetTapeSymbol(var tape : TTuringTape; Symbol: TTuringSymbol);
     function GetTapeSymbol(var tape : TTuringTape) : TTuringSymbol;
+    procedure MoveTape(var tape : TTuringTape; move: TTapeMove);
+    function TapeToString(var tape : TTuringTape; Separator: char) : string;
 implementation
     function GetIndexForTape(position: integer) : integer;
     begin
@@ -64,5 +66,46 @@ implementation
             EnsureTapeHasEnoughSpace(tape.NegativeSymbols, Position, tape.EmptySymbol);
             GetTapeSymbol := tape.NegativeSymbols[position];
         end;
+    end;
+
+    procedure MoveTape(var tape : TTuringTape; move: TTapeMove);
+    begin
+        if move = Left then begin
+            Dec(tape.CurrentPosition);
+        end else if move = Right then begin
+            Inc(tape.CurrentPosition);
+        end else if move = None then begin
+            { Nothing to do }
+        end else begin
+            WriteLn('Unknown move "', move ,'"');
+            Halt(1);
+        end;
+    end;
+
+    function TapeToString(var tape : TTuringTape; Separator: char) : string;
+    var
+        Idx   : integer;
+        First : boolean;
+    begin
+        TapeToString := '';
+        First := true;
+
+        for Idx := length(tape.NegativeSymbols) -1 downto 0 do
+        begin
+            if not First then
+                TapeToString := TapeToString + Separator;
+            TapeToString := TapeToString + tape.NegativeSymbols[Idx];
+            First := false;
+        end;
+
+        for Idx := 0 to length(tape.NegativeSymbols) - 1 do
+        begin
+            if not First then
+                TapeToString := TapeToString + Separator;
+            TapeToString := TapeToString + tape.PositiveSymbols[Idx];
+            First := false;
+        end;
+
+        TapeToString := Separator + TapeToString + Separator;
     end;
 end.
