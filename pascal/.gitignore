@@ -1,0 +1,5 @@
+Turing
+*.o
+*.ppu
+Turing.*
+!Turing.pas
