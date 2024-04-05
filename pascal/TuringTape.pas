@@ -1,7 +1,7 @@
 unit TuringTape;
 
 interface
-    uses TuringTyping;
+    uses TuringTyping, TuringUtility;
 
     type 
         TTuringTape = record
@@ -11,18 +11,18 @@ interface
             CurrentPosition     : integer;           
         end;
 
-    procedure InitializeTape(var Tape : TTuringTape; EmptySymbol: TTuringSymbol);
-    procedure SetTapeSymbol(var Tape : TTuringTape; Symbol: TTuringSymbol);
-    function GetTapeSymbol(var Tape : TTuringTape) : TTuringSymbol;
-    procedure MoveTape(var Tape : TTuringTape; move: TTapeMove);
-    function TapeToString(var Tape : TTuringTape; Separator: char) : string;
+    procedure InitializeTape(var Tape: TTuringTape; EmptySymbol: TTuringSymbol);
+    procedure SetTapeSymbol(var Tape: TTuringTape; Symbol: TTuringSymbol);
+    function GetTapeSymbol(var Tape: TTuringTape) : TTuringSymbol;
+    procedure MoveTape(var Tape: TTuringTape; Move: TTapeMove);
+    function TapeToString(var Tape: TTuringTape; Separator: char) : string;
 
 implementation
     function GetIndexForTape(position: integer) : integer;
     begin
         if position >= 0 
-        then GetIndexForTape := position
-        else GetIndexForTape := -position - 1;
+        then GetIndexForTape:= position
+        else GetIndexForTape:= -position - 1;
     end;
 
     procedure EnsureTapeHasEnoughSpace(var Tape: TArrayOfSymbols; Position: integer; EmptySymbol: TTuringSymbol);
@@ -34,7 +34,7 @@ implementation
         end;
     end;
 
-    procedure InitializeTape(var Tape : TTuringTape; EmptySymbol: TTuringSymbol);
+    procedure InitializeTape(var Tape: TTuringTape; EmptySymbol: TTuringSymbol);
     begin
         Tape.CurrentPosition := 0;
         Tape.EmptySymbol := EmptySymbol;
@@ -42,7 +42,7 @@ implementation
         SetLength(Tape.PositiveSymbols, 0);
     end;
 
-    procedure SetTapeSymbol(var Tape : TTuringTape; Symbol: TTuringSymbol);
+    procedure SetTapeSymbol(var Tape: TTuringTape; Symbol: TTuringSymbol);
     var
         Position : integer;
     begin
@@ -56,7 +56,7 @@ implementation
         end;
     end;
 
-    function GetTapeSymbol(var Tape : TTuringTape) : TTuringSymbol;
+    function GetTapeSymbol(var Tape: TTuringTape) : TTuringSymbol;
     var
         Position : integer;
     begin
@@ -70,21 +70,20 @@ implementation
         end;
     end;
 
-    procedure MoveTape(var Tape : TTuringTape; move: TTapeMove);
+    procedure MoveTape(var Tape: TTuringTape; Move: TTapeMove);
     begin
-        if move = Left then begin
+        if Move = Left then begin
             Dec(Tape.CurrentPosition);
-        end else if move = Right then begin
+        end else if Move = Right then begin
             Inc(Tape.CurrentPosition);
-        end else if move = None then begin
+        end else if Move = None then begin
             { Nothing to do }
         end else begin
-            WriteLn('Unknown move "', move ,'"');
-            Halt(1);
+            Panic('Unknown move "' +TapeMoveToStr(Move) + '"');
         end;
     end;
 
-    function TapeToString(var Tape : TTuringTape; Separator: char) : string;
+    function TapeToString(var Tape: TTuringTape; Separator: char) : string;
     var
         Idx   : integer;
         First : boolean;
