@@ -1,3 +1,3 @@
-program TuringTest
+program TuringTest;
 begin
 end.
