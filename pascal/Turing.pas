@@ -2,13 +2,16 @@ program Turing;
 uses TuringMachineIO, TuringMachine, TuringUtility;
 var
     Machine : TTuringMachine;
+    Debug   : boolean;
 begin
-    if paramCount() <> 3 then begin
-        writeLn('Usage: ', paramStr(0), ' <format> <filename> <tape>');
+    if (paramCount() <> 3) and (paramCount() <> 4) then begin
+        writeLn('Usage: ', paramStr(0), ' <format> <filename> <tape> [-debug]');
         writeLn('Formats:');
         writeLn('   - toml: TOML format');
         Panic('')
     end;
 
-    LoadTuringMachineFromFile(Machine, paramStr(1), paramStr(2), true);
+    Debug := (paramCount() = 4) and (paramStr(4) = '-debug');
+
+    LoadTuringMachineFromFile(Machine, paramStr(1), paramStr(2), Debug);
 end.

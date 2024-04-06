@@ -58,6 +58,7 @@ implementation
             TmpSymbol := GetStringFromTomlDocument(TransitionDoc, 'NewSymbol');
             if Length(TmpSymbol) <> 1 then Panic('Symbol must be exactly one character');
             Transitions[Idx].Target.Symbol := TmpSymbol[1];
+            //WriteLn('[Debug] >>> ', SubString(TransitionDoc.Content, TransitionDoc.Values[0].StartFrom, TransitionDoc.Values[0].EndTo, false));
             //Transitions[Idx].Target.Move := StrToTapeMove(GetStringFromTomlDocument(TransitionDoc, 'Move'));
         end;
 
