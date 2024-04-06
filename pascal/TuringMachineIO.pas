@@ -23,10 +23,11 @@ implementation
 
     procedure LoadTuringMachineFromTomlDocument(var Machine : TTuringMachine; var Document : TTomlDocument; Debug: boolean);
     var
-        States              : array of AnsiString;
+        States              : TArrayOfStates;
         InitialState        : string;
-        FinalStates         : array of AnsiString;
-        Symbols             : array of AnsiString;
+        FinalStates         : TArrayOfStates;
+        SymbolsStr          : array of AnsiString;
+        Symbols             : TSetOfSymbols;
         EmptySymbol         : string;
         CountTransitions    : integer;
         Transitions         : array of TTuringTransitionFunctionMap;
@@ -37,9 +38,11 @@ implementation
         States := GetArrayOfStringsFromTomlDocument(Document, 'States');
         InitialState := GetStringFromTomlDocument(Document, 'InitialState');
         FinalStates := GetArrayOfStringsFromTomlDocument(Document, 'FinalStates');
-        Symbols := GetArrayOfStringsFromTomlDocument(Document, 'Symbols');
-        for Idx := 0 to Length(Symbols) - 1 do begin
-            if Length(Symbols[Idx]) <> 1 then Panic('Symbol must be exactly one character');
+        SymbolsStr := GetArrayOfStringsFromTomlDocument(Document, 'Symbols');
+        Symbols := [];
+        for Idx := 0 to Length(SymbolsStr) - 1 do begin
+            if Length(SymbolsStr[Idx]) <> 1 then Panic('Symbol must be exactly one character');
+            Include(Symbols, char(SymbolsStr[Idx][1]));
         end;
         
         EmptySymbol := GetStringFromTomlDocument(Document, 'EmptySymbol');
@@ -58,15 +61,14 @@ implementation
             TmpSymbol := GetStringFromTomlDocument(TransitionDoc, 'NewSymbol');
             if Length(TmpSymbol) <> 1 then Panic('Symbol must be exactly one character');
             Transitions[Idx].Target.Symbol := TmpSymbol[1];
-            //WriteLn('[Debug] >>> ', SubString(TransitionDoc.Content, TransitionDoc.Values[0].StartFrom, TransitionDoc.Values[0].EndTo, false));
-            //Transitions[Idx].Target.Move := StrToTapeMove(GetStringFromTomlDocument(TransitionDoc, 'Move'));
+            Transitions[Idx].Target.Move := StrToTapeMove(GetStringFromTomlDocument(TransitionDoc, 'Move'));
         end;
 
         if Debug then begin
             WriteLn('[Debug] States -> ', ArrayOfStringToString(States));
             WriteLn('[Debug] InitialState -> "', InitialState,'"');
             WriteLn('[Debug] FinalStates -> ', ArrayOfStringToString(FinalStates));
-            WriteLn('[Debug] Symbols -> ', ArrayOfStringToString(Symbols));
+            WriteLn('[Debug] Symbols -> ', ArrayOfStringToString(SymbolsStr));
             WriteLn('[Debug] EmptySymbol -> "', EmptySymbol,'"');
             WriteLn('[Debug] #Transitions -> ', CountTransitions);
             for Idx := 0 to CountTransitions - 1 do begin
@@ -75,9 +77,17 @@ implementation
                 WriteLn('[Debug]    [',Idx,'].Target.State -> "', Transitions[Idx].Target.State,'"');
                 WriteLn('[Debug]    [',Idx,'].Target.Symbol -> "', Transitions[Idx].Target.Symbol,'"');
                 WriteLn('[Debug]    [',Idx,'].Target.Move -> ', TapeMoveToStr(Transitions[Idx].Target.Move));
-        end;
+            end;
        end;
-        { TODO: Implement me }
+
+        InitializeTuringMachine(
+            Machine,
+            States,
+            InitialState,
+            FinalStates,
+            Symbols,
+            EmptySymbol[1],
+            Transitions);
     end;
 
     procedure LoadTuringMachineFromTomlFile(var Machine : TTuringMachine; Filename : string; Debug: boolean);

@@ -4,7 +4,7 @@ interface
 
     type 
         TTuringSymbol = char;
-        TTuringState = string;
+        TTuringState = AnsiString;
         TTapeMove = (None, Left, Right);
         TArrayOfStates = array of TTuringState;
         TSetOfSymbols = set of TTuringSymbol;

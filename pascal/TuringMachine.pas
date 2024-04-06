@@ -20,9 +20,9 @@ interface
         EmptySymbol         : TTuringSymbol;
         Transitions         : array of TTuringTransitionFunctionMap);
     procedure ClearTuringMachine(var Machine: TTuringMachine; var Tape: TArrayOfSymbols);
-    function StepTuringMachine(var Machine: TTuringMachine) : boolean;
+    function StepTuringMachine(var Machine: TTuringMachine; Debug : boolean) : boolean;
     function HasTuringMachineHalted(var Machine: TTuringMachine) : boolean;
-    procedure RunTuringMachine(var Machine: TTuringMachine);
+    procedure RunTuringMachine(var Machine: TTuringMachine; Debug : boolean);
     function GetCurrentTuringMachineStatus(var Machine: TTuringMachine) : TTuringState;
     function GetTuringMachineTape(var Machine: TTuringMachine) : string;
 
@@ -87,16 +87,21 @@ implementation
        SetTapeContent(Machine.Tape, Tape, true);
     end;
 
-    function StepTuringMachine(var Machine: TTuringMachine) : boolean;
+    function StepTuringMachine(var Machine: TTuringMachine; Debug : boolean) : boolean;
     var
-        Transition : TTuringTransitionFunctionTo;
+        Transition      : TTuringTransitionFunctionTo;
+        CurrentSymbol   : TTuringSymbol;
     begin
         StepTuringMachine := not HasTuringMachineHalted(Machine);
         if StepTuringMachine then begin
-            Transition := GetTransition(Machine.Transitions, Machine.CurrentState, GetTapeSymbol(Machine.Tape));
+            CurrentSymbol := GetTapeSymbol(Machine.Tape);
+            Transition := GetTransition(Machine.Transitions, Machine.CurrentState, CurrentSymbol);
+            if Debug then WriteLn('[Debug] Step ("',Machine.CurrentState,'","',CurrentSymbol,'") -> ("',Transition.State,'","',Transition.Symbol,'",',TapeMoveToStr(Transition.Move),')');
             Machine.CurrentState := Transition.State;
             SetTapeSymbol(Machine.Tape, Transition.Symbol);
             MoveTape(Machine.Tape, Transition.Move);
+        end else begin
+            if Debug then WriteLn('[Debug] Halt')
         end;
     end;
 
@@ -112,9 +117,9 @@ implementation
         end;
     end;
 
-    procedure RunTuringMachine(var Machine: TTuringMachine);
+    procedure RunTuringMachine(var Machine: TTuringMachine; Debug : boolean);
     begin
-        while not StepTuringMachine(Machine) do;
+        while StepTuringMachine(Machine, Debug) do;
     end;
 
     function GetCurrentTuringMachineStatus(var Machine: TTuringMachine) : TTuringState;

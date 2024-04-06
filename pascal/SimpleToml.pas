@@ -120,7 +120,7 @@ implementation
     function ReadLineBoundaries(var Content: AnsiString; StartFrom: integer) : integer;
     begin
         ReadLineBoundaries := StartFrom + 1;
-        while (ReadLineBoundaries < Length(Content)) and not IsEndOfLine(Content, ReadLineBoundaries) do begin
+        while (ReadLineBoundaries <= Length(Content)) and not IsEndOfLine(Content, ReadLineBoundaries) do begin
             Inc(ReadLineBoundaries);
         end;
     end;
@@ -241,7 +241,7 @@ implementation
                             Document.Values[Length(Document.Values) - 1].Span.StartFrom := ValueStartFrom;
                             Document.Values[Length(Document.Values) - 1].Span.EndTo := ValueEndTo;
                         end else if (TableIndex <> -1) and (CurrentDocumentSpan <> -1) then begin
-                            Document.Tables[TableIndex].Spans[CurrentDocumentSpan].EndTo := EndLine;
+                            Document.Tables[TableIndex].Spans[CurrentDocumentSpan].EndTo := EndLine + 1;
                         end;
                     end; { Read a value}
 
@@ -256,7 +256,6 @@ implementation
                         CurrentDocumentSpan := Length(Document.Tables[TableIndex].Spans) -1;
                         Document.Tables[TableIndex].Spans[CurrentDocumentSpan].StartFrom := EndLine;
                         Document.Tables[TableIndex].Spans[CurrentDocumentSpan].EndTo := EndLine + 1;
-
                     end; { Readin sequence of arrays }
                 end; { not comment }
             end; { Not emtpy }
@@ -266,7 +265,7 @@ implementation
 
     procedure LoadTomlDocumentFromString(var Document: TTomlDocument; Content: AnsiString);
     begin
-        LoadTomlDocumentFromStringWithBoundaries(Document, Content, 1, Length(Content));
+        LoadTomlDocumentFromStringWithBoundaries(Document, Content, 1, Length(Content) + 1);
     end;
 
     function GetIndexForValue(var Document: TTomlDocument; ValueName: AnsiString): integer;
