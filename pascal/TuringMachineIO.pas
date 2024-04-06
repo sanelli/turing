@@ -22,9 +22,17 @@ implementation
     end;
 
     procedure LoadTuringMachineFromTomlDocument(var Machine : TTuringMachine; var Document : TTomlDocument);
-
+    var
+        InitialState    : string;
+        States          : array of AnsiString;
     begin
-        { Implement me }
+        InitialState := GetStringFromTomlDocument(Document, 'InitialState');
+        States := GetArrayOfStringsFromTomlDocument(Document, 'States');
+
+        WriteLn('[Debug] InitialState ->  ', InitialState);
+        WriteLn('[Debug] States ->  ', ArrayOfStringToString(States));
+
+        { TODO: Implement me }
     end;
 
     procedure LoadTuringMachineFromTomlFile(var Machine : TTuringMachine; Filename : string);

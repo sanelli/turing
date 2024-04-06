@@ -12,6 +12,8 @@ unit SimpleToml;
 
 interface
     type
+        TTomlArrayOfStrings = array of AnsiString;
+
         TTomlDocumentSpan = record 
             StartFrom   : integer;
             EndTo       : integer;
@@ -36,6 +38,9 @@ interface
 
     procedure LoadTomlDocumentFromFile(var Document: TTomlDocument; Filename: string);
     procedure LoadTomlDocumentFromString(var Document: TTomlDocument; Content: AnsiString);
+
+    function GetStringFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : AnsiString;
+    function GetArrayOfStringsFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : TTomlArrayOfStrings;
 
 implementation
 
@@ -203,7 +208,6 @@ implementation
         SqrParIdx3          : integer;
         SqrParIdx4          : integer;
         ValueName           : AnsiString;
-        ReadValues          : boolean;
         ValueStartFrom      : integer;
         ValueEndTo          : integer;
         TableIndex          : integer;
@@ -214,7 +218,6 @@ implementation
 
         StartLine := StartFrom;
         EndLine := StartLine;
-        ReadValues := true;
         TableIndex := -1;
         CurrentDocumentSpan := -1;
         while EndLine < EndTo do begin
@@ -235,11 +238,8 @@ implementation
                             Document.Values[Length(Document.Values) - 1].ValueName := ValueName;
                             Document.Values[Length(Document.Values) - 1].Span.StartFrom := ValueStartFrom;
                             Document.Values[Length(Document.Values) - 1].Span.EndTo := ValueEndTo;
-
-                            WriteLn('[Debug] Value Found (',ValueName,',',SubString(Content,ValueStartFrom,ValueEndTo),')');
                         end else if (TableIndex <> -1) and (CurrentDocumentSpan <> -1) then begin
                             Document.Tables[TableIndex].Spans[CurrentDocumentSpan].EndTo := EndLine;
-                            WriteLn('[Debug] Updated span end for table "',Document.Tables[TableIndex].ValueName,'"');
                         end;
                     end; { Read a value}
 
@@ -248,10 +248,8 @@ implementation
                     SqrParIdx3 := IndexOf(Content, TrimEndLine - 2, TrimEndLine, integer(char(']')));
                     SqrParIdx4 := IndexOf(Content, TrimEndLine - 1, TrimEndLine, integer(char(']')));
                     if (SqrParIdx1 = TrimStartLine) and (SqrParIdx2 = TrimStartLine + 1) and (SqrParIdx3 = TrimEndLine - 2) and (SqrParIdx4 = TrimEndLine - 1)then begin
-                        ReadValues := false; 
                         ValueName := SubString(Content, SqrParIdx2 + 1, SqrParIdx3);
                         TableIndex := GetOrCreateTableIndex(Document, ValueName);
-                        WriteLn('[Debug] Found table entry (',ValueName,')');
                         Setlength(Document.Tables[TableIndex].Spans, Length(Document.Tables[TableIndex].Spans) + 1);
                         CurrentDocumentSpan := Length(Document.Tables[TableIndex].Spans) -1;
                         Document.Tables[TableIndex].Spans[CurrentDocumentSpan].StartFrom := EndLine;
@@ -268,4 +266,69 @@ implementation
     begin
         LoadTomlDocumentFromStringWithBoundaries(Document, Content, 1, Length(Content));
     end;
+
+    function ExtractStringValue(var Content: AnsiString; StartFrom: integer; EndTo: integer) : AnsiString;
+    begin
+        ExtractStringValue := '';
+        TrimLineBoundaries(Content, StartFrom, EndTo);
+        if (IndexOf(Content, StartFrom, EndTo, integer(char('"'))) = StartFrom)
+            and (IndexOf(Content, EndTo - 1, EndTo, integer(char('"'))) = (EndTo - 1)) then begin
+        end else SimpleTomlPanic('Value does not look like a string');
+
+        ExtractStringValue := SubString(Content, StartFrom + 1, EndTo - 1);
+    end;
+
+    function GetStringFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : AnsiString;
+    var
+        Idx         : integer;
+        FoundIdx    : boolean;
+    begin
+        GetStringFromTomlDocument := '';
+        Idx := 0;
+        FoundIdx := false;
+
+        while (Idx < Length(Document.Values)) and (not FoundIdx) do begin
+            FoundIdx := Document.Values[Idx].ValueName = ValueName;
+            Inc(Idx);
+        end;
+
+        Dec(Idx);
+
+        if not FoundIdx then SimpleTomlPanic('Cannot find value');
+
+        GetStringFromTomlDocument := ExtractStringValue(Document.Content, Document.Values[Idx].Span.StartFrom, Document.Values[Idx].Span.EndTo);
+    end;
+
+    function GetArrayOfStringsFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : TTomlArrayOfStrings;
+    var
+        Idx         : integer;
+        FoundIdx    : boolean;
+        StartFrom   : integer;
+        EndTo       : integer;
+    begin
+        GetArrayOfStringsFromTomlDocument := nil;
+        SetLength(GetArrayOfStringsFromTomlDocument, 0);
+        Idx := 0;
+        FoundIdx := false;
+
+        while (Idx < Length(Document.Values)) and (not FoundIdx) do begin
+            FoundIdx := Document.Values[Idx].ValueName = ValueName;
+            Inc(Idx);
+        end;
+
+        Dec(Idx);
+
+        if not FoundIdx then SimpleTomlPanic('Cannot find value');
+
+        StartFrom := Document.Values[Idx].Span.StartFrom;
+        EndTo := Document.Values[Idx].Span.EndTo;
+        TrimLineBoundaries(Document.Content, StartFrom, EndTo);
+
+        if (IndexOf(Document.Content, StartFrom, EndTo, integer(char('['))) = StartFrom)
+            and (IndexOf(Document.Content, EndTo - 1, EndTo, integer(char(']'))) = (EndTo - 1)) then begin
+        end else SimpleTomlPanic('Value does not look like an array');
+
+        { TODO: IMPLEMENT ME}
+    end;
+
 end.
