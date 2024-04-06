@@ -267,6 +267,22 @@ implementation
         LoadTomlDocumentFromStringWithBoundaries(Document, Content, 1, Length(Content));
     end;
 
+    function GetIndexForValue(var Document: TTomlDocument; ValueName: AnsiString): integer;
+     var FoundIdx: boolean;
+    begin
+        GetIndexForValue := 0;
+        FoundIdx := false;
+
+        while (GetIndexForValue < Length(Document.Values)) and (not FoundIdx) do begin
+            FoundIdx := Document.Values[GetIndexForValue].ValueName = ValueName;
+            Inc(GetIndexForValue);
+        end;
+
+        Dec(GetIndexForValue);
+
+        if not FoundIdx then SimpleTomlPanic('Cannot find value');
+    end;
+
     function ExtractStringValue(var Content: AnsiString; StartFrom: integer; EndTo: integer) : AnsiString;
     begin
         ExtractStringValue := '';
@@ -279,46 +295,22 @@ implementation
     end;
 
     function GetStringFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : AnsiString;
-    var
-        Idx         : integer;
-        FoundIdx    : boolean;
+    var Idx: integer;
     begin
         GetStringFromTomlDocument := '';
-        Idx := 0;
-        FoundIdx := false;
-
-        while (Idx < Length(Document.Values)) and (not FoundIdx) do begin
-            FoundIdx := Document.Values[Idx].ValueName = ValueName;
-            Inc(Idx);
-        end;
-
-        Dec(Idx);
-
-        if not FoundIdx then SimpleTomlPanic('Cannot find value');
-
+        Idx := GetIndexForValue(Document, ValueName);
         GetStringFromTomlDocument := ExtractStringValue(Document.Content, Document.Values[Idx].Span.StartFrom, Document.Values[Idx].Span.EndTo);
     end;
 
     function GetArrayOfStringsFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : TTomlArrayOfStrings;
     var
         Idx         : integer;
-        FoundIdx    : boolean;
         StartFrom   : integer;
         EndTo       : integer;
     begin
         GetArrayOfStringsFromTomlDocument := nil;
         SetLength(GetArrayOfStringsFromTomlDocument, 0);
-        Idx := 0;
-        FoundIdx := false;
-
-        while (Idx < Length(Document.Values)) and (not FoundIdx) do begin
-            FoundIdx := Document.Values[Idx].ValueName = ValueName;
-            Inc(Idx);
-        end;
-
-        Dec(Idx);
-
-        if not FoundIdx then SimpleTomlPanic('Cannot find value');
+        Idx := GetIndexForValue(Document, ValueName);
 
         StartFrom := Document.Values[Idx].Span.StartFrom;
         EndTo := Document.Values[Idx].Span.EndTo;
@@ -326,9 +318,8 @@ implementation
 
         if (IndexOf(Document.Content, StartFrom, EndTo, integer(char('['))) = StartFrom)
             and (IndexOf(Document.Content, EndTo - 1, EndTo, integer(char(']'))) = (EndTo - 1)) then begin
+            { TODO: IMPLEMENT ME}
         end else SimpleTomlPanic('Value does not look like an array');
-
-        { TODO: IMPLEMENT ME}
     end;
 
 end.
