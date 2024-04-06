@@ -21,6 +21,9 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 ### [Go](https://github.com/sanelli/turing/tree/main/go)
 - Go 1.21.3
 
+### [Pascal](https://github.com/sanelli/turing/tree/main/pascal)
+- Free Pascal 3.2
+
 ## Compile and test
 ```powershell
 ./Scripts/Build.ps1       # Build all the executable
