@@ -37,3 +37,6 @@ Each script accepts a `-Language` parameter with a list of languages:
 ./Scripts/Substitute.ps1 -Languages:$("csharp", "cpp")
 ./Scripts/Test.ps1 -Languages:$("cpp")
 ```
+
+## Screenshots
+<img width="682" alt="image" src="https://github.com/sanelli/turing/assets/2866041/045c58a0-ebc1-4e46-85f9-02d858bb99ac">
