@@ -12,6 +12,7 @@ interface
         end;
 
     procedure InitializeTape(var Tape: TTuringTape; EmptySymbol: TTuringSymbol);
+    procedure SetTapeContent(var Tape: TTuringTape; var Content: TArrayOfSymbols; ResetPosition: boolean);
     procedure SetTapeSymbol(var Tape: TTuringTape; Symbol: TTuringSymbol);
     function GetTapeSymbol(var Tape: TTuringTape) : TTuringSymbol;
     procedure MoveTape(var Tape: TTuringTape; Move: TTapeMove);
@@ -40,6 +41,18 @@ implementation
         Tape.EmptySymbol := EmptySymbol;
         SetLength(Tape.NegativeSymbols, 0);
         SetLength(Tape.PositiveSymbols, 0);
+    end;
+
+    procedure SetTapeContent(var Tape: TTuringTape; var Content: TArrayOfSymbols; ResetPosition: boolean);
+    var
+        Idx: integer;
+    begin
+        for Idx := 0 to Length(Content) - 1 do begin
+            SetTapeSymbol(Tape, Content[Idx]);
+            MoveTape(Tape, Right);
+        end;
+
+        if ResetPosition then Tape.CurrentPosition := 0;
     end;
 
     procedure SetTapeSymbol(var Tape: TTuringTape; Symbol: TTuringSymbol);

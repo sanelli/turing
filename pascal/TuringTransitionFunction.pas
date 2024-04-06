@@ -29,6 +29,7 @@ interface
         function HasTransition(var Transitions: TTuringTransitionFunction; State: TTuringState; Symbol: TTuringSymbol) : boolean;
         procedure SetTransition(var Transitions: TTuringTransitionFunction; Source: TTuringTransitionFunctionFrom; Target: TTuringTransitionFunctionTo);
         function GetTransition(var Transitions: TTuringTransitionFunction; Source: TTuringTransitionFunctionFrom) : TTuringTransitionFunctionTo;
+        function GetTransition(var Transitions: TTuringTransitionFunction; State: TTuringState; Symbol: TTuringSymbol) : TTuringTransitionFunctionTo;
 
 implementation
     procedure InitializeTuringTransitionFunction(var Transitions: TTuringTransitionFunction; HaltState: TTuringState);
@@ -59,24 +60,28 @@ implementation
         Transitions.Transitions[ Length(Transitions.Transitions) - 1].Target := Target;
     end;
     
-    function GetTransition(var Transitions: TTuringTransitionFunction; Source: TTuringTransitionFunctionFrom) : TTuringTransitionFunctionTo;
+    function GetTransition(var Transitions: TTuringTransitionFunction; Source: TTuringTransitionFunctionFrom) : TTuringTransitionFunctionTo;  
+    begin
+        GetTransition := GetTransition(Transitions, Source.State, Source.Symbol);
+    end;
+
+    function GetTransition(var Transitions: TTuringTransitionFunction; State: TTuringState; Symbol: TTuringSymbol) : TTuringTransitionFunctionTo;
     var
         Idx     : integer;
         Found   : boolean;
     begin
         GetTransition.State := Transitions.HaltState;
-        GetTransition.Symbol := Source.Symbol;
+        GetTransition.Symbol := Symbol;
         GetTransition.Move := None;
 
         Found := false;
         Idx := 0;
         while (Idx < Length(Transitions.Transitions)) and not Found do begin
-            if (Transitions.Transitions[Idx].Source.State = Source.State) and (Transitions.Transitions[Idx].Source.Symbol = Source.Symbol) then begin
+            if (Transitions.Transitions[Idx].Source.State = State) and (Transitions.Transitions[Idx].Source.Symbol = Symbol) then begin
                 Found := true;
                 GetTransition := Transitions.Transitions[Idx].Target
             end;
             Inc(Idx);
         end;
-
     end;
 end.

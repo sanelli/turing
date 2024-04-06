@@ -9,6 +9,8 @@ interface
         TArrayOfSymbols = array of TTuringSymbol;
 
     function TapeMoveToStr(Move: TTapeMove) : string;
+    function IsValidTuringState(State: TTuringState; States: TArrayOfStates) : boolean;
+
 implementation
 
     function TapeMoveToStr(Move: TTapeMove) : string;
@@ -22,5 +24,18 @@ implementation
         end else begin
             TapeMoveToStr := 'Unknown';
         end;
+    end;
+
+    function IsValidTuringState(State: TTuringState; States: TArrayOfStates) : boolean;
+    var
+        Idx: integer;
+    begin
+        IsValidTuringState := false;
+        Idx := 0;
+        if State <> '' then
+            while (Idx < Length(States)) and (not IsValidTuringState) do begin
+                IsValidTuringState := States[Idx] = State;
+                Inc(Idx);
+            end;
     end;
 end.
