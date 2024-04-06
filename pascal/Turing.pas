@@ -10,5 +10,5 @@ begin
         Panic('')
     end;
 
-    LoadTuringMachineFromFile(Machine, paramStr(1), paramStr(2));
+    LoadTuringMachineFromFile(Machine, paramStr(1), paramStr(2), true);
 end.

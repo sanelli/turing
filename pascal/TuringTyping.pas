@@ -1,5 +1,7 @@
 unit TuringTyping;
 interface
+    uses TuringUtility;
+
     type 
         TTuringSymbol = char;
         TTuringState = string;
@@ -9,6 +11,7 @@ interface
         TArrayOfSymbols = array of TTuringSymbol;
 
     function TapeMoveToStr(Move: TTapeMove) : string;
+    function StrToTapeMove(Move: string) : TTapeMove;
     function IsValidTuringState(State: TTuringState; States: TArrayOfStates) : boolean;
 
 implementation
@@ -16,13 +19,26 @@ implementation
     function TapeMoveToStr(Move: TTapeMove) : string;
     begin
         if Move = None then begin
-            TapeMoveToStr := 'None';
+            TapeMoveToStr := 'none';
         end else if Move = Left then begin
-            TapeMoveToStr := 'Left';
+            TapeMoveToStr := 'left';
         end else if Move = Right then begin
-            TapeMoveToStr := 'Right';
+            TapeMoveToStr := 'right';
         end else begin
-            TapeMoveToStr := 'Unknown';
+            Panic('Unknown move type');
+        end;
+    end;
+
+    function StrToTapeMove(Move: string) : TTapeMove;
+    begin
+        if Move = 'none' then begin
+            StrToTapeMove := None;
+        end else if Move = 'left' then begin
+            StrToTapeMove := Left;
+        end else if Move = 'right' then begin
+            StrToTapeMove := Right;
+        end else begin
+            Panic('Unknown move type');
         end;
     end;
 

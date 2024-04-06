@@ -41,6 +41,8 @@ interface
 
     function GetStringFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : AnsiString;
     function GetArrayOfStringsFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : TTomlArrayOfStrings;
+    function GetLengthForTomlDocumentTable(var Document: TTomlDocument; ValueName: AnsiString) : integer;
+    procedure GetTomlDocumentTableAt(var Document: TTomlDocument; var SubDocument: TTomlDocument; ValueName: AnsiString; Idx: integer);
 
 implementation
 
@@ -136,12 +138,12 @@ implementation
         end;
     end;
 
-    function SubString(var Content: AnsiString; StartFrom: integer; EndTo: integer) : AnsiString;
+    function SubString(var Content: AnsiString; StartFrom: integer; EndTo: integer; Trim: boolean) : AnsiString;
     var
         Idx : integer;
     begin
         SubString := '';
-        TrimLineBoundaries(Content, StartFrom, EndTo);
+        if Trim then TrimLineBoundaries(Content, StartFrom, EndTo);
         Idx := StartFrom;
 
         while Idx < EndTo do begin
@@ -230,7 +232,7 @@ implementation
                     EqualSignIdx := IndexOf(Content, TrimStartLine, TrimEndLine, integer(char('=')));
                     if EqualSignIdx <> -1 then begin
                         if TableIndex = -1 then begin { In the root }
-                            ValueName := SubString(Content, TrimStartLine, EqualSignIdx);
+                            ValueName := SubString(Content, TrimStartLine, EqualSignIdx, true);
                             SetLength(Document.Values, Length(Document.Values) + 1);
                             ValueStartFrom := EqualSignIdx + 1;
                             ValueEndTo := TrimEndLine;
@@ -248,7 +250,7 @@ implementation
                     SqrParIdx3 := IndexOf(Content, TrimEndLine - 2, TrimEndLine, integer(char(']')));
                     SqrParIdx4 := IndexOf(Content, TrimEndLine - 1, TrimEndLine, integer(char(']')));
                     if (SqrParIdx1 = TrimStartLine) and (SqrParIdx2 = TrimStartLine + 1) and (SqrParIdx3 = TrimEndLine - 2) and (SqrParIdx4 = TrimEndLine - 1)then begin
-                        ValueName := SubString(Content, SqrParIdx2 + 1, SqrParIdx3);
+                        ValueName := SubString(Content, SqrParIdx2 + 1, SqrParIdx3, true);
                         TableIndex := GetOrCreateTableIndex(Document, ValueName);
                         Setlength(Document.Tables[TableIndex].Spans, Length(Document.Tables[TableIndex].Spans) + 1);
                         CurrentDocumentSpan := Length(Document.Tables[TableIndex].Spans) -1;
@@ -268,7 +270,7 @@ implementation
     end;
 
     function GetIndexForValue(var Document: TTomlDocument; ValueName: AnsiString): integer;
-     var FoundIdx: boolean;
+    var FoundIdx: boolean;
     begin
         GetIndexForValue := 0;
         FoundIdx := false;
@@ -287,11 +289,13 @@ implementation
     begin
         ExtractStringValue := '';
         TrimLineBoundaries(Content, StartFrom, EndTo);
+
         if (IndexOf(Content, StartFrom, EndTo, integer(char('"'))) = StartFrom)
             and (IndexOf(Content, EndTo - 1, EndTo, integer(char('"'))) = (EndTo - 1)) then begin
-        end else SimpleTomlPanic('Value does not look like a string');
 
-        ExtractStringValue := SubString(Content, StartFrom + 1, EndTo - 1);
+            ExtractStringValue := SubString(Content, StartFrom + 1, EndTo - 1, false);
+
+        end else SimpleTomlPanic('Value does not look like a string');
     end;
 
     function GetStringFromTomlDocument(var Document: TTomlDocument; ValueName: AnsiString) : AnsiString;
@@ -307,6 +311,7 @@ implementation
         Idx         : integer;
         StartFrom   : integer;
         EndTo       : integer;
+        CommaIdx    : integer;
     begin
         GetArrayOfStringsFromTomlDocument := nil;
         SetLength(GetArrayOfStringsFromTomlDocument, 0);
@@ -318,8 +323,51 @@ implementation
 
         if (IndexOf(Document.Content, StartFrom, EndTo, integer(char('['))) = StartFrom)
             and (IndexOf(Document.Content, EndTo - 1, EndTo, integer(char(']'))) = (EndTo - 1)) then begin
-            { TODO: IMPLEMENT ME}
+
+            Inc(StartFrom);
+            Dec(EndTo);
+
+            while StartFrom < EndTo do begin
+                CommaIdx := IndexOf(Document.Content, StartFrom, EndTo, integer(char(',')));
+                if CommaIdx = -1 then CommaIdx := EndTo;
+                SetLength(GetArrayOfStringsFromTomlDocument, Length(GetArrayOfStringsFromTomlDocument) + 1);
+                GetArrayOfStringsFromTomlDocument[Length(GetArrayOfStringsFromTomlDocument)-1] := ExtractStringValue(Document.Content, StartFrom, CommaIdx);
+                StartFrom := CommaIdx + 1;
+            end;
+
         end else SimpleTomlPanic('Value does not look like an array');
     end;
 
+    function GetIndexForTable(var Document: TTomlDocument; ValueName: AnsiString): integer;
+    var FoundIdx: boolean;
+    begin
+        GetIndexForTable := 0;
+        FoundIdx := false;
+
+        while (GetIndexForTable < Length(Document.Tables)) and (not FoundIdx) do begin
+            FoundIdx := Document.Tables[GetIndexForTable].ValueName = ValueName;
+            Inc(GetIndexForTable);
+        end;
+
+        Dec(GetIndexForTable);
+
+        if not FoundIdx then SimpleTomlPanic('Cannot find table');
+    end;
+
+    function GetLengthForTomlDocumentTable(var Document: TTomlDocument; ValueName: AnsiString) : integer;
+    var Idx: integer;
+    begin
+        Idx := GetIndexForTable(Document, ValueName);
+        GetLengthForTomlDocumentTable := Length(Document.Tables[Idx].Spans);
+    end;
+
+    procedure GetTomlDocumentTableAt(var Document: TTomlDocument; var SubDocument: TTomlDocument; ValueName: AnsiString; Idx: integer);
+    var
+        TableIdx    : integer;
+        Span : TTomlDocumentSpan;
+    begin
+        TableIdx := GetIndexForTable(Document, ValueName);
+        Span := Document.Tables[TableIdx].Spans[Idx];
+        LoadTomlDocumentFromStringWithBoundaries(SubDocument, Document.Content, Span.StartFrom, Span.EndTo);
+    end;
 end.

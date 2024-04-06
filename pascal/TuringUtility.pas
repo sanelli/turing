@@ -21,7 +21,7 @@ implementation
         First := true;
         for Idx := 0 to Length(a) - 1 do begin
             if not First then ArrayOfStringToString := ArrayOfStringToString + ', ';
-            ArrayOfStringToString := ArrayOfStringToString + a[Idx];
+            ArrayOfStringToString := ArrayOfStringToString + '"' + a[Idx] + '"';
             First := false;
         end;
         ArrayOfStringToString := ArrayOfStringToString + ']';
