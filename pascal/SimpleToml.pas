@@ -4,7 +4,7 @@
     - String values
     - Array of strings on a single line
     - Array of sections
-    It does not supper sections properly currently or nested sections.
+    It does not supper sections properly currently (but could be easy to add) or nested sections.
     The format needs to be: variable definitions followerd by contiguous array definitions.
     It supports comments.
 }
@@ -12,16 +12,26 @@ unit SimpleToml;
 
 interface
     type
-        TTomlDocumentValueSpan = record
-            ValueName   : string;
+        TTomlDocumentSpan = record 
             StartFrom   : integer;
             EndTo       : integer;
+        end;
+
+        TTomlDocumentValue = record
+            ValueName   : string;
+            Span        : TTomlDocumentSpan;
+        end;
+
+        TTomlDocumentTableSpan = record
+            ValueName   : string;
+            Spans       : array of TTomlDocumentSpan;
         end;
 
         TTomlDocument = record
             Filename    : string;
             Content     : AnsiString;
-            Values      : array of TTomlDocumentValueSpan;
+            Values      : array of TTomlDocumentValue;
+            Tables      : array of TTomlDocumentTableSpan;
         end;
 
     procedure LoadTomlDocumentFromFile(var Document: TTomlDocument; Filename: string);
@@ -158,30 +168,56 @@ implementation
         LoadTomlDocumentFromString(Document, Content);
     end;
 
-    procedure LoadTomlDocumentFromString(var Document: TTomlDocument; Content: AnsiString; StartFrom: integer, EndTo: integer);
+    function GetTableIndex(var Document: TTomlDocument; ValueName : AnsiString) : integer;
+    var
+        Idx: integer;
     begin
+        GetTableIndex := -1;
+        Idx := 0;
+        While (Idx < Length(Document.Tables)) and (GetTableIndex = -1) do begin
+            if Document.Tables[Idx].ValueName = ValueName then GetTableIndex := Idx;
+            Inc(Idx);
+        end;
     end;
 
-    procedure LoadTomlDocumentFromString(var Document: TTomlDocument; Content: AnsiString);
+    function GetOrCreateTableIndex(var Document: TTomlDocument; ValueName : AnsiString) : integer;
+    begin
+        GetOrCreateTableIndex := GetTableIndex(Document, ValueName);
+        if GetOrCreateTableIndex = -1 then begin
+            SetLength(Document.Tables, Length(Document.Tables) + 1);
+            GetOrCreateTableIndex := Length(Document.Tables) - 1;
+            Document.Tables[GetOrCreateTableIndex].ValueName := ValueName;
+            SetLength(Document.Tables[GetOrCreateTableIndex].Spans, 0);
+        end;
+    end;
+
+    procedure LoadTomlDocumentFromStringWithBoundaries(var Document: TTomlDocument; Content: AnsiString; StartFrom: integer; EndTo: integer);
     var
-        StartLine       : integer;
-        EndLine         : integer;
-        TrimStartLine   : integer;
-        TrimEndLine     : integer;
-        EqualSignIdx    : integer;
-        SqrParIdx       : integer;
-        ValueName       : AnsiString;
-        ReadValues      : boolean;
-        ValueStartFrom  : integer;
-        ValueEndTo      : integer;
+        StartLine           : integer;
+        EndLine             : integer;
+        TrimStartLine       : integer;
+        TrimEndLine         : integer;
+        EqualSignIdx        : integer;
+        SqrParIdx1          : integer;
+        SqrParIdx2          : integer;
+        SqrParIdx3          : integer;
+        SqrParIdx4          : integer;
+        ValueName           : AnsiString;
+        ReadValues          : boolean;
+        ValueStartFrom      : integer;
+        ValueEndTo          : integer;
+        TableIndex          : integer;
+        CurrentDocumentSpan : integer;
     begin
         Document.Content := Content;
         SetLength(Document.Values, 0);
 
-        StartLine := 1;
+        StartLine := StartFrom;
         EndLine := StartLine;
         ReadValues := true;
-        while EndLine < Length(Content) do begin
+        TableIndex := -1;
+        CurrentDocumentSpan := -1;
+        while EndLine < EndTo do begin
             EndLine := ReadLineBoundaries(Content, StartLine);
             if (EndLine - StartLine) > 1 then begin { Skip empty lines }
                 TrimStartLine := StartLine;
@@ -189,28 +225,47 @@ implementation
                 TrimLineBoundaries(Content, TrimStartLine, TrimEndLine);
                 if not IsCommentLine(Content, TrimStartLine) then begin
                     EqualSignIdx := IndexOf(Content, TrimStartLine, TrimEndLine, integer(char('=')));
-                    if ReadValues and (EqualSignIdx <> -1) then begin
-                        ValueName := SubString(Content, TrimStartLine, EqualSignIdx);
-                        SetLength(Document.Values, Length(Document.Values) + 1);
-                        ValueStartFrom := EqualSignIdx + 1;
-                        ValueEndTo := TrimEndLine;
-                        TrimLineBoundaries(Content, ValueStartFrom, ValueEndTo);
-                        Document.Values[Length(Document.Values) - 1].ValueName := ValueName;
-                        Document.Values[Length(Document.Values) - 1].StartFrom := ValueStartFrom;
-                        Document.Values[Length(Document.Values) - 1].EndTo := ValueEndTo;
+                    if EqualSignIdx <> -1 then begin
+                        if TableIndex = -1 then begin { In the root }
+                            ValueName := SubString(Content, TrimStartLine, EqualSignIdx);
+                            SetLength(Document.Values, Length(Document.Values) + 1);
+                            ValueStartFrom := EqualSignIdx + 1;
+                            ValueEndTo := TrimEndLine;
+                            TrimLineBoundaries(Content, ValueStartFrom, ValueEndTo);
+                            Document.Values[Length(Document.Values) - 1].ValueName := ValueName;
+                            Document.Values[Length(Document.Values) - 1].Span.StartFrom := ValueStartFrom;
+                            Document.Values[Length(Document.Values) - 1].Span.EndTo := ValueEndTo;
 
-                        WriteLn('[Debug] Value Found (',ValueName,',',SubString(Content,ValueStartFrom,ValueEndTo),')');
+                            WriteLn('[Debug] Value Found (',ValueName,',',SubString(Content,ValueStartFrom,ValueEndTo),')');
+                        end else if (TableIndex <> -1) and (CurrentDocumentSpan <> -1) then begin
+                            Document.Tables[TableIndex].Spans[CurrentDocumentSpan].EndTo := EndLine;
+                            WriteLn('[Debug] Updated span end for table "',Document.Tables[TableIndex].ValueName,'"');
+                        end;
                     end; { Read a value}
 
-                    SqrParIdx := IndexOf(Content, TrimStartLine, TrimEndLine, integer(char('[')));
-                    if SqrParIdx = TrimStartLine then begin
+                    SqrParIdx1 := IndexOf(Content, TrimStartLine, TrimEndLine, integer(char('[')));
+                    SqrParIdx2 := IndexOf(Content, TrimStartLine + 1, TrimEndLine, integer(char('[')));
+                    SqrParIdx3 := IndexOf(Content, TrimEndLine - 2, TrimEndLine, integer(char(']')));
+                    SqrParIdx4 := IndexOf(Content, TrimEndLine - 1, TrimEndLine, integer(char(']')));
+                    if (SqrParIdx1 = TrimStartLine) and (SqrParIdx2 = TrimStartLine + 1) and (SqrParIdx3 = TrimEndLine - 2) and (SqrParIdx4 = TrimEndLine - 1)then begin
                         ReadValues := false; 
-                    end; { Readin sequence of arrays }
+                        ValueName := SubString(Content, SqrParIdx2 + 1, SqrParIdx3);
+                        TableIndex := GetOrCreateTableIndex(Document, ValueName);
+                        WriteLn('[Debug] Found table entry (',ValueName,')');
+                        Setlength(Document.Tables[TableIndex].Spans, Length(Document.Tables[TableIndex].Spans) + 1);
+                        CurrentDocumentSpan := Length(Document.Tables[TableIndex].Spans) -1;
+                        Document.Tables[TableIndex].Spans[CurrentDocumentSpan].StartFrom := EndLine;
+                        Document.Tables[TableIndex].Spans[CurrentDocumentSpan].EndTo := EndLine + 1;
 
+                    end; { Readin sequence of arrays }
                 end; { not comment }
             end; { Not emtpy }
             StartLine := EndLine;
         end; { for each line }
+    end;
 
+    procedure LoadTomlDocumentFromString(var Document: TTomlDocument; Content: AnsiString);
+    begin
+        LoadTomlDocumentFromStringWithBoundaries(Document, Content, 1, Length(Content));
     end;
 end.
