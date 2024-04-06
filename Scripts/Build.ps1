@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python", "cpp", "go"))
+param([string[]]$Languages = $("csharp", "python", "cpp", "go","pascal"))
 
 $Success = $true
 
@@ -36,6 +36,17 @@ if ("go" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Go ==="
     Push-Location ./go
     go build
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
+}
+
+if ("pascal" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== Pascal ==="
+    Push-Location ./pascal
+    fpc Turing.pas
+    $Success = $Success -and $?
+    fpc TuringTest.pas
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
