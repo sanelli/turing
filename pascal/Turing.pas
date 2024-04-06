@@ -1,14 +1,14 @@
 program Turing;
-uses TuringMachine;
+uses TuringMachineIO, TuringMachine, TuringUtility;
+var
+    Machine : TTuringMachine;
 begin
     if paramCount() <> 3 then begin
         writeLn('Usage: ', paramStr(0), ' <format> <filename> <tape>');
         writeLn('Formats:');
         writeLn('   - toml: TOML format');
-    end else begin
-        writeLn('Work in progress:');
-        writeLn('   - Format: ',  paramStr(1));
-        writeLn('   - Filename: ',  paramStr(2));
-        writeLn('   - Tape: ',  paramStr(3));
+        Panic('')
     end;
+
+    LoadTuringMachineFromFile(Machine, paramStr(1), paramStr(2));
 end.

@@ -1,0 +1,3 @@
+program TuringTest
+begin
+end.
