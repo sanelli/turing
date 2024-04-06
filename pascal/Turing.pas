@@ -23,6 +23,6 @@ begin
     WriteLn('Initial tape: |', TapeToString(Machine.Tape, '|'), '|');
     RunTuringMachine(Machine, Debug);
     WriteLn('Final tape: |', TapeToString(Machine.Tape, '|'), '|');
-    WriteLn('Final state: ', Machine.CurrentState);
+    WriteLn('Final state: ''', Machine.CurrentState,'''');
 
 end.
