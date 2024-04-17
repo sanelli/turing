@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python", "cpp", "go", "pascal"))
+param([string[]]$Languages = $("csharp", "python", "cpp", "go", "pascal", "ada"))
 
 function Invoke-Checks() {
     $Success = $true
@@ -57,9 +57,21 @@ function Invoke-Checks() {
         $CorrectVersion = Confirm-PascalVersion 3 2
         $LocalSuccess = $Exists -and $CorrectVersion
         $Success = $Success -and $LocalSuccess
-        Write-Succes $LocalSuccess "fpc"
+        Write-Succes $LocalSuccess "Pascal"
         if (-not $LocalSuccess) {
             Write-Host -ForegroundColor:"Red" "Visit https://www.freepascal.org/ for installation instructions"
+        }
+    }
+
+    if ("ada" -in $Languages) {
+        Write-Host -ForegroundColor:"Yellow" "=== Ada ==="
+        $Exists = Confirm-CommandExists "alr"
+        $CorrectVersion = Confirm-AdaVersion 2 0
+        $LocalSuccess = $Exists -and $CorrectVersion
+        $Success = $Success -and $LocalSuccess
+        Write-Succes $LocalSuccess "Ada"
+        if (-not $LocalSuccess) {
+            Write-Host -ForegroundColor:"Red" "Visit https://alire.ada.dev for installation instructions"
         }
     }
 
@@ -167,6 +179,22 @@ function Confirm-PascalVersion([int]$expectedMajorVersion, [int]$expectedMinorVe
 
     if (-not $Success) {
         Write-Host "Require fpc version >= $expectedMajorVersion.$expectedMinorVersion but version $version found." -ForegroundColor:Red
+    }
+    return $Success;
+}
+
+function Confirm-AdaVersion([int]$expectedMajorVersion, [int]$expectedMinorVersion) {
+
+    $adaVersion = alr --version
+    $version = $adaVersion -split " "
+    $versionMajorMinor = $version[1] -split "\."
+    $versionMajor = [System.Int32]::Parse($versionMajorMinor[0].Trim())
+    $versionMinor = [System.Int32]::Parse($versionMajorMinor[1].Trim())
+
+    $Success = ($versionMajor -gt $expectedMajorVersion) -or ($versionMajor -eq $expectedMajorVersion) -and ($versionMinor -ge $expectedMinorVersion)
+
+    if (-not $Success) {
+        Write-Host "Require cmake version >= $expectedMajorVersion.$expectedMinorVersion but version $version found." -ForegroundColor:Red
     }
     return $Success;
 }

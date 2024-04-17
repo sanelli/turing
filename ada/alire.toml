@@ -1,0 +1,10 @@
+name = "turing"
+description = "Ada implementation of a turing machine interpreter"
+version = "0.1.0-dev"
+
+authors = ["Stefano Anelli"]
+maintainers = ["Stefano Anelli <redacted@redacted.com>"]
+maintainers-logins = ["sanelli"]
+licenses = "MIT"
+website = "https://github.com/sanelli/turing"
+tags = ["turing", "ada", "turing-machine"]
