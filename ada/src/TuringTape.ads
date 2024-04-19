@@ -34,4 +34,7 @@ package TuringTape is
       content : Unbounded_String;
       resetPosition : Boolean := True);
 
+   function ToString
+      (turingTape : in out TTuringTape) return Unbounded_String;
+
 end TuringTape;

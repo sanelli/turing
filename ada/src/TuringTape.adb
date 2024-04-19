@@ -98,4 +98,35 @@ package body TuringTape is
       end if;
    end Initialize;
 
+   function ToString
+      (turingTape : in out TTuringTape) return Unbounded_String
+   is
+      result : Unbounded_String;
+      notFirst : Boolean;
+   begin
+      result := Ada.Strings.Unbounded.To_Unbounded_String ("|");
+      notFirst := False;
+
+      for Index in 0 .. UnlimitedTape.Length (turingTape.NegativeTape) - 1 loop
+         if notFirst then
+            Append (result, Ada.Strings.Unbounded.To_Unbounded_String ("|"));
+         end if;
+            Append (result, Ada.Strings.Unbounded.To_Unbounded_String
+               ((1 => turingTape.NegativeTape (Natural (Index)))));
+         notFirst := True;
+      end loop;
+
+      for Index in 0 .. UnlimitedTape.Length (turingTape.PositiveTape) - 1 loop
+         if notFirst then
+            Append (result, Ada.Strings.Unbounded.To_Unbounded_String ("|"));
+         end if;
+            Append (result, Ada.Strings.Unbounded.To_Unbounded_String
+               ((1 => turingTape.PositiveTape (Natural (Index)))));
+         notFirst := True;
+      end loop;
+
+      Append (result, Ada.Strings.Unbounded.To_Unbounded_String ("|"));
+      return result;
+   end ToString;
+
 end TuringTape;
