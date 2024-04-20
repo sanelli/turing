@@ -1,5 +1,4 @@
-with TuringTape;
-with TuringTransitionFunction;
+with TuringMachine;
 
 procedure Turing is
 begin
