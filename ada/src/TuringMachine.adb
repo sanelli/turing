@@ -1,5 +1,4 @@
 with TuringException; use TuringException;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body TuringMachine is
    procedure RaiseIfInvalidStatus (
@@ -98,8 +97,58 @@ package body TuringMachine is
       Create (machine.Tape, emptySymbol);
       Create (machine.TransitionFunction, GetAnyStatus (finalStatues));
       for transition in transitions.Iterate loop
-         machine.TransitionFunction.Set (TuringTransitionFunctionMap.Key (transition), transitions (transition));
+         machine.TransitionFunction.Set (
+            TuringTransitionFunctionMap.Key (transition),
+            transitions (transition));
       end loop;
    end Create;
+
+   procedure Clear (
+      machine : in out TTuringMachine;
+      initialTape : Unbounded_String)
+   is
+   begin
+      for Index in 1 .. Length (initialTape) loop
+         RaiseIfInvalidSymbol (
+            Element (initialTape, Index),
+            machine.Symbols,
+            "Symbol");
+      end loop;
+
+      machine.CurrentStatus := machine.InitialStatus;
+      machine.Tape.Clear;
+      machine.Tape.Initialize (initialTape);
+   end Clear;
+
+   function Halted (
+      machine : in out TTuringMachine)
+      return Boolean
+   is
+   begin
+      return machine.FinalStatuses.Contains (machine.CurrentStatus);
+   end Halted;
+
+   procedure Step (machine : in out TTuringMachine)
+   is
+      from : TTuringTransitionFunctionFrom;
+      to : TTuringTransitionFunctionTo;
+   begin
+      if not machine.Halted then
+         from.Status := machine.CurrentStatus;
+         from.Symbol := machine.Tape.GetSymbol;
+         to := machine.TransitionFunction.Get (from);
+         machine.CurrentStatus := to.Status;
+         machine.Tape.SetSymbol (to.Symbol);
+         machine.Tape.Move (to.Move);
+      end if;
+   end Step;
+
+   procedure Run (machine : in out TTuringMachine)
+   is
+   begin
+      while not machine.Halted loop
+         machine.Step;
+      end loop;
+   end Run;
 
 end TuringMachine;
