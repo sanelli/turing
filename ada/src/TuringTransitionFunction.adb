@@ -1,14 +1,49 @@
-package body TuringTransitionFunction is
+with Ada.Strings.Unbounded.Hash;
+with TuringException; use TuringException;
 
+package body TuringTransitionFunction is
    function Hash (from : TTuringTransitionFunctionFrom) return Hash_Type
    is
    begin
-      return 0;
+      return Ada.Strings.Unbounded.Hash (from.Status)
+         xor Character'Pos (from.Symbol);
    end Hash;
 
-   function Equals (left, right : TTuringTransitionFunctionFrom) return Boolean
+   overriding function "=" (left, right : TTuringTransitionFunctionFrom)
+      return Boolean
    is
    begin
-      return False;
-   end Equals;
+      return left.Status = right.Status and then left.Symbol = right.Symbol;
+   end "=";
+
+   procedure Set (
+      transitionFunction : in out TTuringTransitionFunction;
+      from : TTuringTransitionFunctionFrom;
+      to : TTuringTransitionFunctionTo)
+   is
+   begin
+      if transitionFunction.Map.Contains (from) then
+         raise TTuringException with "Transition already setup";
+      else
+         transitionFunction.Map.Insert (from, to);
+      end if;
+   end Set;
+
+   function Get (
+      transitionFunction : in out TTuringTransitionFunction;
+      from : TTuringTransitionFunctionFrom)
+      return TTuringTransitionFunctionTo
+   is
+      haltTransition : TTuringTransitionFunctionTo;
+   begin
+      if not transitionFunction.Map.Contains (from) then
+         haltTransition.Move := None;
+         haltTransition.Status := transitionFunction.HaltStatus;
+         haltTransition.Symbol := from.Symbol;
+         return haltTransition;
+      else
+         return transitionFunction.Map.Element (from);
+      end if;
+   end Get;
+
 end TuringTransitionFunction;

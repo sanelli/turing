@@ -1,5 +1,6 @@
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with TuringTyping; use TuringTyping;
 
 package TuringTape is
 
@@ -12,8 +13,6 @@ package TuringTape is
       NegativeTape   : UnlimitedTape.Vector;
       CursorPosition : Integer;
    end record;
-
-   type TTuringTapeMove is (Left, Right, None);
 
    procedure Create
       (turingTape : in out TTuringTape; emptySymbol : Character);
