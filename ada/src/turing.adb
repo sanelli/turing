@@ -37,8 +37,9 @@ begin
       Append (Message, "|");
       UIO.Put_Line (Message);
 
-      Message := To_Unbounded_String ("Final state: ");
+      Message := To_Unbounded_String ("Final state: '");
       Append (Message, Machine.CurrentStatus);
+      Append (Message, "'");
       UIO.Put_Line (Message);
 
       CLI.Set_Exit_Status (Ada.Command_Line.Success);
