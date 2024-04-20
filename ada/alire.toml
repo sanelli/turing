@@ -8,3 +8,6 @@ maintainers-logins = ["sanelli"]
 licenses = "MIT"
 website = "https://github.com/sanelli/turing"
 tags = ["turing", "ada", "turing-machine"]
+
+[[depends-on]]
+ada_toml = "~0.4.0"

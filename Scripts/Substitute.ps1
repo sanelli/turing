@@ -49,8 +49,8 @@ if ("pascal" -in $Languages) {
 
 if ("ada" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Ada ==="
-    Push-Location ./ada/bin
-    ./turing toml "../Samples/Substitute.tom" "abba"
+    Push-Location ./ada
+    ./bin/turing toml "../Samples/Substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""

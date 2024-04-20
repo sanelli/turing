@@ -14,7 +14,7 @@ is
    Machine  : TTuringMachine;
    Message  : Unbounded_String;
 begin
-   if CLI.Argument_Count /= 1 then
+   if CLI.Argument_Count /= 3 then
       IO.Put_Line ("Usage: turing <format> <filename> <tape>");
       IO.Put_Line ("Formats:");
       IO.Put_Line ("   - toml: TOML format for the turing machine.");
@@ -37,7 +37,7 @@ begin
       Append (Message, "|");
       UIO.Put_Line (Message);
 
-      Message := To_Unbounded_String ("Final state: |");
+      Message := To_Unbounded_String ("Final state: ");
       Append (Message, Machine.CurrentStatus);
       UIO.Put_Line (Message);
 

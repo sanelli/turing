@@ -14,4 +14,6 @@ package TuringTyping is
      Ada.Containers.Ordered_Sets
        (Element_Type => TTuringSymbol);
 
+   function FromString (str : Unbounded_String) return TTuringTapeMove;
+
 end TuringTyping;

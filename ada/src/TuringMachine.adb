@@ -1,4 +1,5 @@
 with TuringException; use TuringException;
+with Ada.Text_IO.Unbounded_IO;
 
 package body TuringMachine is
    procedure RaiseIfInvalidStatus (
