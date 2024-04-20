@@ -16,6 +16,14 @@ package body TuringTransitionFunction is
       return left.Status = right.Status and then left.Symbol = right.Symbol;
    end "=";
 
+   procedure Create (
+      transitionFunction : in out TTuringTransitionFunction;
+      haltStatus  : TTuringStatus)
+   is
+   begin
+      transitionFunction.HaltStatus := haltStatus;
+   end Create;
+
    procedure Set (
       transitionFunction : in out TTuringTransitionFunction;
       from : TTuringTransitionFunctionFrom;

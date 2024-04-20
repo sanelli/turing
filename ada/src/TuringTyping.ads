@@ -10,7 +10,6 @@ package TuringTyping is
      Ada.Containers.Ordered_Sets
        (Element_Type => TTuringStatus);
 
-
    package TTuringSymbolsSets is new
      Ada.Containers.Ordered_Sets
        (Element_Type => TTuringSymbol);

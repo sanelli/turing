@@ -33,6 +33,10 @@ package TuringTransitionFunction is
       Map         : TuringTransitionFunctionMap.Map;
    end record;
 
+   procedure Create (
+      transitionFunction : in out TTuringTransitionFunction;
+      haltStatus  : TTuringStatus);
+
    procedure Set (
       transitionFunction : in out TTuringTransitionFunction;
       from : TTuringTransitionFunctionFrom;

@@ -1,7 +1,7 @@
 with Ada.Containers; use Ada.Containers;
 
 package body TuringTape is
-   procedure Create (turingTape : in out TTuringTape; emptySymbol : Character)
+   procedure Create (turingTape : in out TTuringTape; emptySymbol : TTuringSymbol)
    is
    begin
       turingTape.CursorPosition := 0;
@@ -37,7 +37,7 @@ package body TuringTape is
       end if;
    end EnsureTapeHasSpaceForCurrentPosition;
 
-   procedure SetSymbol (turingTape : in out TTuringTape; symbol : Character)
+   procedure SetSymbol (turingTape : in out TTuringTape; symbol : TTuringSymbol)
    is
       Index : Natural;
    begin
@@ -49,7 +49,7 @@ package body TuringTape is
       end if;
    end SetSymbol;
 
-   function GetSymbol (turingTape : in out TTuringTape) return Character
+   function GetSymbol (turingTape : in out TTuringTape) return TTuringSymbol
    is
       Index : Natural;
    begin

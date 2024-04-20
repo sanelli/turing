@@ -13,4 +13,12 @@ package TuringMachine is
       TransitionFunction   : TTuringTransitionFunction;
    end record;
 
+   procedure Create (
+      machine        : in out TTuringMachine;
+      statuses       : TTuringStatusesSets.Set;
+      initialStatus  : TTuringStatus;
+      finalStatues   : TTuringStatusesSets.Set;
+      symbols        : TTuringSymbolsSets.Set;
+      emptySymbol    : TTuringSymbol;
+      transitions    : TuringTransitionFunctionMap.Map);
 end TuringMachine;
