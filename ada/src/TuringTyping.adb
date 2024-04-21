@@ -6,7 +6,7 @@ package body TuringTyping is
    is
    begin
       if str = "left" then
-         return Left; 
+         return Left;
       elsif str = "right" then
          return Right;
       elsif str = "none" then
@@ -14,6 +14,6 @@ package body TuringTyping is
       end if;
 
       raise TTuringException with "Unknown move";
-   end;
+   end FromString;
 
 end TuringTyping;
