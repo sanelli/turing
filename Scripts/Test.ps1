@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python","cpp","go","pascal"))
+param([string[]]$Languages = $("csharp", "python","cpp","go","pascal", "ada"))
 
 $Success = $true
 
@@ -45,6 +45,14 @@ if ("pascal" -in $Languages) {
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
+}
+
+if ("ada" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "`n=== Ada ==="
+    Push-Location ./ada/test
+    alr run
+    $Success = $Success -and $?
+    Pop-Location
 }
 
 if ($Success) {

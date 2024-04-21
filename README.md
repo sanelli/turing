@@ -9,25 +9,28 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 ```
 
 ### [C#](https://github.com/sanelli/turing/tree/main/csharp)
-- dotnet 8
+- [dotnet](https://dotnet.microsoft.com) 8
 
 ### [Python](https://github.com/sanelli/turing/tree/main/python)
-- python 3.11
+- [python](https://www.python.org) 3.11.5
 
 ### [C++](https://github.com/sanelli/turing/tree/main/cpp)
-- CMake 3.27
+- [CMake](https://cmake.org) 3.27
 - C++ 20 compiler (the script does not validate this as too many variations exists)
 
 ### [Go](https://github.com/sanelli/turing/tree/main/go)
-- Go 1.21.3
+- [Go](https://go.dev) 1.21.3
 
 ### [Pascal](https://github.com/sanelli/turing/tree/main/pascal)
-- Free Pascal 3.2
+- [Free pascal](https://www.freepascal.org) 3.2
+
+### [Ada](https://github.com/sanelli/turing/tree/main/ada)
+- [Alire](https://alire.ada.dev) 2.0
 
 ## Compile and test
 ```powershell
 ./Scripts/Build.ps1       # Build all the executable
-./Scripts/Substitute.ps1  # Execute the substitute machine sample
+./Scripts/Substitute.ps1  # Execute the substitute turing machine sample
 ./Scripts/Test.ps1        # Run all the tests
 ```
 

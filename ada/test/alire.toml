@@ -1,0 +1,18 @@
+name = "turingtests"
+description = "Tests for the ada implementation of a turing machine interpreter"
+version = "0.1.0-dev"
+
+authors = ["Stefano Anelli"]
+maintainers = ["Stefano Anelli <redacted@redacted.com>"]
+maintainers-logins = ["sanelli"]
+licenses = "MIT"
+website = "https://github.com/sanelli/turing"
+tags = ["test", "ada", "turing", "turing-machine"]
+
+executables = ["turingtests"]
+
+[[depends-on]]
+aunit = "^24.0.0"
+
+[[depends-on]]
+ada_toml = "~0.4.0"
