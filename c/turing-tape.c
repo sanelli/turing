@@ -75,19 +75,7 @@ struct turing_tape *create_turing_tape(TURING_SYMBOL empty_symbol)
 
 void free_turing_tape(struct turing_tape *tape)
 {
-    while (tape->positive != NULL)
-    {
-        struct turing_tape_entry *next = tape->positive->next;
-        free(tape->positive);
-        tape->positive = next;
-    }
-
-    while (tape->negative != NULL)
-    {
-        struct turing_tape_entry *next = tape->negative->next;
-        free(tape->negative);
-        tape->negative = next;
-    }
+    clear_turing_tape(tape, NULL, 0);
 }
 
 void ensure_turing_tapes_sizes(struct turing_tape *tape)
@@ -165,4 +153,33 @@ void print_turing_tape(struct turing_tape *tape, char separator)
         printf("%c", cursor->symbol);
         printf("%c", separator);
     }
+}
+
+void clear_turing_tape(struct turing_tape *tape, TURING_SYMBOL *symbols, size_t number_of_symbols)
+{
+    while (tape->positive != NULL)
+    {
+        struct turing_tape_entry *next = tape->positive->next;
+        free(tape->positive);
+        tape->positive = next;
+    }
+    tape->positive = NULL;
+
+    while (tape->negative != NULL)
+    {
+        struct turing_tape_entry *next = tape->negative->next;
+        free(tape->negative);
+        tape->negative = next;
+    }
+    tape->negative = NULL;
+
+    if (symbols != NULL && number_of_symbols > 0)
+    {
+        for (size_t index = (size_t)0; index < number_of_symbols; ++index)
+        {
+            set_turing_tape_symbol(tape, symbols[index]);
+        }
+    }
+
+    tape->current_position = 0;
 }
