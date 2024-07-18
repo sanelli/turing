@@ -12,10 +12,10 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-add_executable(turing turing.c turing-tape.c)
+add_executable(turing turing.c turing-typing.c turing-tape.c turing-transition-function.c)
 include_directories(turing .)
 
-add_executable(turing-tests turing-tests.c turing-tape.c)
+add_executable(turing-tests turing-tests.c turing-typing.c turing-tape.c turing-transition-function.c)
 include_directories(turing-tests .)
 
 add_test(NAME turing COMMAND turing-tests)
