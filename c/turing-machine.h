@@ -30,14 +30,15 @@ struct turing_machine
     struct turing_transition_function* transition_function;
 };
 
-struct turing_machine* create_turing_machine(
-    TURING_STATE* states,
+struct turing_machine *create_turing_machine(
+    TURING_STATE *states,
     size_t number_of_states,
     TURING_STATE initial_state,
-    TURING_STATE* final_states,
+    TURING_STATE *final_states,
     size_t number_of_final_states,
-    TURING_SYMBOL* symbols,
-    size_t number_of_symbols);
+    TURING_SYMBOL *symbols,
+    size_t number_of_symbols,
+    TURING_SYMBOL empty_symbol);
 void free_turing_machine(struct turing_machine* tm);
 void turing_machine_add_transition(
     struct turing_machine* tm,

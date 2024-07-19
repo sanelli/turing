@@ -7,24 +7,68 @@
 #include <turing-transition-function.h>
 #include <turing-machine.h>
 
-void free_turing_machine_list_of_status(struct list_of_states_entry* head)
+struct list_of_states_entry *append_turing_machine_list_of_status(struct list_of_states_entry *head, TURING_STATE state)
 {
-    struct list_of_states_entry* cursor = head;
-    while(cursor != NULL)
+    struct list_of_states_entry *entry = (struct list_of_states_entry *)malloc(sizeof(struct list_of_states_entry));
+    entry->state = turing_copy_state(state);
+    entry->next = NULL;
+    if (head == NULL)
     {
-        struct list_of_states_entry* current = cursor;
+        return entry;
+    }
+    else
+    {
+        struct list_of_states_entry *cursor = head;
+        while (cursor->next != NULL)
+        {
+            cursor = cursor->next;
+        }
+
+        cursor->next = entry;
+        return head;
+    }
+}
+
+void free_turing_machine_list_of_status(struct list_of_states_entry *head)
+{
+    struct list_of_states_entry *cursor = head;
+    while (cursor != NULL)
+    {
+        struct list_of_states_entry *current = cursor;
         cursor = cursor->next;
         turing_free_state(cursor->state);
         free(current);
     }
 }
 
-void free_turing_machine_list_of_symbols(struct list_of_symbols_entry* head)
+struct list_of_symbols_entry *append_turing_machine_list_of_symbols(struct list_of_symbols_entry *head, TURING_SYMBOL symbol)
 {
-    struct list_of_symbols_entry* cursor = head;
-    while(cursor != NULL)
+    struct list_of_symbols_entry *entry = (struct list_of_symbols_entry *)malloc(sizeof(struct list_of_symbols_entry));
+    entry->symbol = symbol;
+    entry->next = NULL;
+    if (head == NULL)
     {
-        struct list_of_symbols_entry* current = cursor;
+        return entry;
+    }
+    else
+    {
+        struct list_of_symbols_entry *cursor = head;
+        while (cursor->next != NULL)
+        {
+            cursor = cursor->next;
+        }
+
+        cursor->next = entry;
+        return head;
+    }
+}
+
+void free_turing_machine_list_of_symbols(struct list_of_symbols_entry *head)
+{
+    struct list_of_symbols_entry *cursor = head;
+    while (cursor != NULL)
+    {
+        struct list_of_symbols_entry *current = cursor;
         cursor = cursor->next;
         free(current);
     }
@@ -37,20 +81,46 @@ struct turing_machine *create_turing_machine(
     TURING_STATE *final_states,
     size_t number_of_final_states,
     TURING_SYMBOL *symbols,
-    size_t number_of_symbols)
+    size_t number_of_symbols,
+    TURING_SYMBOL empty_symbol)
 {
-    // IMPLEMENT ME
-    return NULL;
+    struct turing_machine *tm = (struct turing_machine *)malloc(sizeof(struct turing_machine));
+    tm->initial_state = turing_copy_state(initial_state);
+    tm->current_state = initial_state;
+
+    tm->states = NULL;
+    for (size_t index = 0; index < number_of_states; index++)
+    {
+        tm->states = append_turing_machine_list_of_status(tm->states, states[index]);
+    }
+
+    tm->final_states = NULL;
+    for (size_t index = 0; index < number_of_final_states; index++)
+    {
+        tm->final_states = append_turing_machine_list_of_status(tm->final_states, final_states[index]);
+    }
+
+    tm->symbols = NULL;
+    for (size_t index = 0; index < number_of_symbols; index++)
+    {
+        tm->symbols = append_turing_machine_list_of_symbols(tm->symbols, symbols[index]);
+    }
+
+    tm->tape = create_turing_tape(empty_symbol);
+    tm->transition_function = create_turing_transition_function(final_states[0]);
+
+    return tm;
 }
 
 void free_turing_machine(struct turing_machine *tm)
 {
-    free(tm);
+    turing_free_state(tm->initial_state);
     free_turing_tape(tm->tape);
     free_turing_transition_function(tm->transition_function);
     free_turing_machine_list_of_status(tm->states);
     free_turing_machine_list_of_status(tm->final_states);
     free_turing_machine_list_of_symbols(tm->symbols);
+    free(tm);
 }
 
 void turing_machine_add_transition(
