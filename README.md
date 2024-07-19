@@ -27,6 +27,10 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 ### [Ada](https://github.com/sanelli/turing/tree/main/ada)
 - [Alire](https://alire.ada.dev) 2.0
 
+### [C](https://github.com/sanelli/turing/tree/main/c)
+- [CMake](https://cmake.org) 3.27
+- C17 compiler (the Check.ps1 does not validate this)
+
 ## Compile and test
 ```powershell
 ./Scripts/Build.ps1       # Build all the executable

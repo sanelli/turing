@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python","cpp","go","pascal", "ada"))
+param([string[]]$Languages = $("csharp", "python","cpp","go","pascal", "ada", "c"))
 
 $Success = $true
 
@@ -53,6 +53,15 @@ if ("ada" -in $Languages) {
     alr run
     $Success = $Success -and $?
     Pop-Location
+}
+
+if ("c" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== C ==="
+    Push-Location ./c
+    ./turing-tests
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
 }
 
 if ($Success) {

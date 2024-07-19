@@ -1,11 +1,11 @@
-param([string[]]$Languages = $("csharp","python","cpp","go","pascal","ada"))
+param([string[]]$Languages = $("csharp", "python", "cpp", "go", "pascal", "ada", "c"))
 
 $Success = $true
 
 if ("csharp" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== C# ==="
     Push-Location ./csharp
-    dotnet run --project ./Turing -c:Release --no-build toml "../Samples/Substitute.tom" "abba"
+    dotnet run --project ./Turing -c:Release --no-build toml "../Samples/substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -14,7 +14,7 @@ if ("csharp" -in $Languages) {
 if ("python" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Python ==="
     Push-Location ./python
-    python3 ./turing.py toml "../Samples/Substitute.tom" "abba"
+    python3 ./turing.py toml "../Samples/substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -23,7 +23,7 @@ if ("python" -in $Languages) {
 if ("cpp" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== C++ ==="
     Push-Location ./cpp
-    ./turing toml "../Samples/Substitute.tom" "abba"
+    ./turing toml "../Samples/substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -32,7 +32,7 @@ if ("cpp" -in $Languages) {
 if ("go" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Go ==="
     Push-Location ./go
-    ./turing toml "../Samples/Substitute.tom" "abba"
+    ./turing toml "../Samples/substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -41,7 +41,7 @@ if ("go" -in $Languages) {
 if ("pascal" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Pascal ==="
     Push-Location ./pascal
-    ./Turing toml "../Samples/Substitute.tom" "abba"
+    ./Turing toml "../Samples/substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
@@ -50,7 +50,16 @@ if ("pascal" -in $Languages) {
 if ("ada" -in $Languages) {
     Write-Host -ForegroundColor:"Yellow" "=== Ada ==="
     Push-Location ./ada
-    ./bin/turing toml "../Samples/Substitute.tom" "abba"
+    ./bin/turing toml "../Samples/substitute.tom" "abba"
+    $Success = $Success -and $?
+    Pop-Location
+    Write-Host ""
+}
+
+if ("c" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "=== C ==="
+    Push-Location ./c
+    ./turing toml "../Samples/substitute.tom" "abba"
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
