@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python", "cpp", "go", "pascal", "ada"))
+param([string[]]$Languages = $("csharp", "python", "cpp", "go", "pascal", "ada", "c"))
 
 function Invoke-Checks() {
     $Success = $true
@@ -72,6 +72,18 @@ function Invoke-Checks() {
         Write-Succes $LocalSuccess "Ada"
         if (-not $LocalSuccess) {
             Write-Host -ForegroundColor:"Red" "Visit https://alire.ada.dev for installation instructions"
+        }
+    }
+
+    if ("c" -in $Languages) {
+        Write-Host -ForegroundColor:"Yellow" "=== C ==="
+        $Exists = Confirm-CommandExists "cmake"
+        $CorrectVersion = Confirm-CMakeVersion 3 27
+        $LocalSuccess = $Exists -and $CorrectVersion
+        $Success = $Success -and $LocalSuccess
+        Write-Succes $LocalSuccess "C"
+        if (-not $LocalSuccess) {
+            Write-Host -ForegroundColor:"Red" "Visit https://cmake.org/download/ for installation instructions"
         }
     }
 

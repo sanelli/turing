@@ -1,0 +1,14 @@
+build/
+CMakeFiles/
+*.cmake
+CMakeCache.txt
+Makefile
+turing
+turing.exe
+turing-tests
+turing-tests.exe
+.vscode
+
+libs/CMakeFiles
+libs/cmake_install.cmake
+libs/Makefile
