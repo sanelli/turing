@@ -21,13 +21,13 @@ int main(int argc, char *argv[])
    {
       return EXIT_FAILURE;
    }
-   
+
    turing_machine_initialise(tm, argv[3], strlen(argv[3]));
    printf("Initial tape: ");
    print_turing_tape(tm->tape, '|');
    printf("\n");
 
-   // turing_machine_run(tm);
+   turing_machine_run(tm);
 
    printf("Final tape: ");
    print_turing_tape(tm->tape, '|');

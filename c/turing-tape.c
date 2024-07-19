@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <turing-typing.h>
 #include <turing-tape.h>
@@ -185,4 +186,32 @@ void clear_turing_tape(struct turing_tape *tape, TURING_SYMBOL *symbols, size_t 
     }
 
     tape->current_position = 0;
+}
+
+enum turing_tape_move_direction turing_tape_move_direction_from_string(char *move)
+{
+    if (strcmp("left", move) == 0)
+    {
+        return LEFT;
+    }
+
+    if (strcmp("right", move) == 0)
+    {
+        return RIGHT;
+    }
+
+    return NONE;
+}
+
+char *turing_tape_move_direction_to_string(enum turing_tape_move_direction move)
+{
+    switch (move)
+    {
+    case LEFT:
+        return "left";
+    case RIGHT:
+        return "right";
+    default:
+        return "none";
+    }
 }

@@ -31,4 +31,6 @@ void turing_transition_function_append(
     enum turing_tape_move_direction move);
 struct turing_transition_function_entry turing_transition_function_find(struct turing_transition_function* ttf, TURING_SYMBOL from_symbol, TURING_STATE from_state);
 
+void turing_transition_function_print(struct turing_transition_function *ttf);
+
 #endif

@@ -5,6 +5,7 @@
 #include <toml-c.h>
 
 #include <turing-io.h>
+#include <turing-tape.h>
 #include <turing-typing.h>
 #include <turing-machine.h>
 
@@ -104,7 +105,7 @@ struct turing_machine *read_turing_machine_from_toml_content(char *content)
     free(empty_symbol_toml.u.s);
 
     // Create the turing machine
-   struct turing_machine * tm = create_turing_machine(
+    struct turing_machine *tm = create_turing_machine(
         states,
         number_of_states,
         initial_state,
@@ -114,14 +115,42 @@ struct turing_machine *read_turing_machine_from_toml_content(char *content)
         number_of_symbols,
         empty_symbol);
 
+    // Add transformaiton function
+    struct toml_array_t *transitions_table_toml = toml_table_array(root, "Transitions");
+    int number_of_transactions = toml_array_len(transitions_table_toml);
+    for (int index = 0; index < number_of_transactions; ++index)
+    {
+        struct toml_table_t *transaction_toml = toml_array_table(transitions_table_toml, index);
+        struct toml_value_t from_state = toml_table_string(transaction_toml, "State");
+        struct toml_value_t from_symbol = toml_table_string(transaction_toml, "Symbol");
+        struct toml_value_t to_state = toml_table_string(transaction_toml, "NewState");
+        struct toml_value_t to_symbol = toml_table_string(transaction_toml, "NewSymbol");
+        struct toml_value_t move = toml_table_string(transaction_toml, "Move");
+
+        turing_machine_add_transition(
+            tm,
+            from_symbol.u.s[0],
+            from_state.u.s,
+            to_symbol.u.s[0],
+            to_state.u.s,
+            turing_tape_move_direction_from_string(move.u.s));
+
+        free(from_state.u.s);
+        free(from_symbol.u.s);
+        free(to_state.u.s);
+        free(to_symbol.u.s);
+        free(move.u.s);
+    }
+
     // Free everything
-    for(int index = 0; index < number_of_states; ++index)
+    toml_free(root);
+    for (int index = 0; index < number_of_states; ++index)
     {
         turing_free_state(states[index]);
     }
     free(states);
     turing_free_state(initial_state);
-    for(int index = 0; index < number_of_states; ++index)
+    for (int index = 0; index < number_of_states; ++index)
     {
         turing_free_state(final_states[index]);
     }

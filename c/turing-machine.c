@@ -179,6 +179,8 @@ void turing_machine_add_transition(
     enum turing_tape_move_direction move)
 {
     turing_transition_function_append(tm->transition_function, from_symbol, from_state, to_symbol, to_state, move);
+    // turing_transition_function_print(tm->transition_function);
+    // printf("\n");
 }
 
 void turing_machine_initialise(struct turing_machine *tm, TURING_SYMBOL *symbols, size_t number_of_symbols)
@@ -220,6 +222,6 @@ BOOL turing_machine_step(struct turing_machine *tm)
 
 void turing_machine_run(struct turing_machine *tm)
 {
-    while (!turing_machine_step(tm))
+    while (turing_machine_step(tm))
         ;
 }

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include <turing-tape.h>
@@ -44,8 +45,8 @@ void free_turing_transition_function_entry(struct turing_transition_function_ent
     {
         struct turing_transition_function_entry *current = cursor;
         cursor = cursor->next;
-        turing_free_state(cursor->from_state);
-        turing_free_state(cursor->to_state);
+        turing_free_state(current->from_state);
+        turing_free_state(current->to_state);
         free(current);
     }
 }
@@ -59,6 +60,7 @@ struct turing_transition_function_entry *turing_transition_function_entry_find(s
         {
             return cursor;
         }
+        cursor = cursor->next;
     }
 
     return NULL;
@@ -87,7 +89,7 @@ void turing_transition_function_append(
     TURING_STATE to_state,
     enum turing_tape_move_direction move)
 {
-    if (turing_transition_function_entry_find(ttf->transition, from_symbol, from_state) != NULL)
+    if (turing_transition_function_entry_find(ttf->transition, from_symbol, from_state) == NULL)
     {
         ttf->transition = turing_transition_function_entry_append(ttf->transition, from_symbol, from_state, to_symbol, to_state, move);
     }
@@ -99,10 +101,12 @@ struct turing_transition_function_entry turing_transition_function_find(struct t
     result.next = NULL;
 
     struct turing_transition_function_entry *entry = turing_transition_function_entry_find(ttf->transition, from_symbol, from_state);
-    if(entry != NULL)
+    if (entry != NULL)
     {
         result = *entry;
-    } else {
+    }
+    else
+    {
         result.from_state = from_state;
         result.from_symbol = from_symbol;
         result.to_state = ttf->halt_state;
@@ -112,4 +116,27 @@ struct turing_transition_function_entry turing_transition_function_find(struct t
 
     result.next = NULL;
     return result;
+}
+
+void turing_transition_function_print(struct turing_transition_function *ttf)
+{
+    struct turing_transition_function_entry *cursor = ttf->transition;
+    BOOL not_first = FALSE;
+    printf("{ ");
+    while (cursor != NULL)
+    {
+        if (not_first)
+        {
+            printf(", ");
+        }
+        printf("('%c','%s') -> ('%c','%s','%s')",
+               cursor->from_symbol,
+               cursor->from_state,
+               cursor->to_symbol,
+               cursor->to_state,
+               turing_tape_move_direction_to_string(cursor->move));
+        cursor = cursor->next;
+        not_first = TRUE;
+    }
+    printf("} ");
 }

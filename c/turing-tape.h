@@ -34,4 +34,7 @@ void clear_turing_tape(struct turing_tape* tape, TURING_SYMBOL* symbols, size_t 
 
 void print_turing_tape(struct turing_tape* tape, char separator);
 
+enum turing_tape_move_direction turing_tape_move_direction_from_string(char* move);
+char* turing_tape_move_direction_to_string(enum turing_tape_move_direction move);
+
 #endif
