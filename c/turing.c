@@ -23,16 +23,16 @@ int main(int argc, char *argv[])
    }
 
    turing_machine_initialise(tm, argv[3], strlen(argv[3]));
-   printf("Initial tape: ");
+   printf("Initial tape: |");
    print_turing_tape(tm->tape, '|');
-   printf("\n");
+   printf("|\n");
 
    turing_machine_run(tm);
 
-   printf("Final tape: ");
+   printf("Final tape: |");
    print_turing_tape(tm->tape, '|');
-   printf("\n");
-   printf("Final state: %s\n", tm->current_state);
+   printf("|\n");
+   printf("Final state: '%s'\n", tm->current_state);
    free_turing_machine(tm);
    return EXIT_SUCCESS;
 }
