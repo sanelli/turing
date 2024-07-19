@@ -53,4 +53,7 @@ BOOL turing_machine_halted(struct turing_machine* tm);
 BOOL turing_machine_step(struct turing_machine* tm);
 void turing_machine_run(struct turing_machine* tm);
 
+void print_turing_machine_list_of_status(struct list_of_states_entry *head);
+void print_turing_machine_list_of_symbols(struct list_of_symbols_entry *head);
+
 #endif

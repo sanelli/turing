@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <turing-typing.h>
 #include <turing-tape.h>
@@ -36,9 +37,28 @@ void free_turing_machine_list_of_status(struct list_of_states_entry *head)
     {
         struct list_of_states_entry *current = cursor;
         cursor = cursor->next;
-        turing_free_state(cursor->state);
+        turing_free_state(current->state);
         free(current);
     }
+}
+
+void print_turing_machine_list_of_status(struct list_of_states_entry *head)
+{
+    struct list_of_states_entry *cursor = head;
+    BOOL not_first = FALSE;
+    printf("[ ");
+    while (cursor != NULL)
+    {
+        if (not_first)
+        {
+            printf(", ");
+        }
+        printf("'%s'", cursor->state);
+
+        not_first = TRUE;
+        cursor = cursor->next;
+    }
+    printf(" ]");
 }
 
 struct list_of_symbols_entry *append_turing_machine_list_of_symbols(struct list_of_symbols_entry *head, TURING_SYMBOL symbol)
@@ -74,6 +94,25 @@ void free_turing_machine_list_of_symbols(struct list_of_symbols_entry *head)
     }
 }
 
+void print_turing_machine_list_of_symbols(struct list_of_symbols_entry *head)
+{
+    struct list_of_symbols_entry *cursor = head;
+    BOOL not_first = FALSE;
+    printf("[ ");
+    while (cursor != NULL)
+    {
+        if (not_first)
+        {
+            printf(", ");
+        }
+        printf("'%c'", cursor->symbol);
+
+        not_first = TRUE;
+        cursor = cursor->next;
+    }
+    printf(" ]");
+}
+
 struct turing_machine *create_turing_machine(
     TURING_STATE *states,
     size_t number_of_states,
@@ -86,7 +125,7 @@ struct turing_machine *create_turing_machine(
 {
     struct turing_machine *tm = (struct turing_machine *)malloc(sizeof(struct turing_machine));
     tm->initial_state = turing_copy_state(initial_state);
-    tm->current_state = initial_state;
+    tm->current_state = tm->initial_state;
 
     tm->states = NULL;
     for (size_t index = 0; index < number_of_states; index++)
@@ -108,6 +147,14 @@ struct turing_machine *create_turing_machine(
 
     tm->tape = create_turing_tape(empty_symbol);
     tm->transition_function = create_turing_transition_function(final_states[0]);
+
+    // printf("States: ");
+    // print_turing_machine_list_of_status(tm->states);
+    // printf("\nFinal states: ");
+    // print_turing_machine_list_of_status(tm->final_states);
+    // printf("\nSymbols: ");
+    // print_turing_machine_list_of_symbols(tm->symbols);
+    // printf("\n");
 
     return tm;
 }

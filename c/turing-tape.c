@@ -82,16 +82,18 @@ void ensure_turing_tapes_sizes(struct turing_tape *tape)
 {
     if (tape->current_position >= 0)
     {
-        while (tape->current_position <= turing_tape_entry_length(tape->positive))
+        while (turing_tape_entry_length(tape->positive) <= tape->current_position)
         {
-            turing_tape_entry_append(tape->positive, tape->empty_symbol);
+            tape->positive = turing_tape_entry_append(tape->positive, tape->empty_symbol);
+            return;
         }
     }
     else
     {
-        while (tape->current_position <= turing_tape_entry_length(tape->negative) + 1)
+        int actual_position = -tape->current_position + 1;
+        while (turing_tape_entry_length(tape->negative) <= actual_position)
         {
-            turing_tape_entry_append(tape->negative, tape->empty_symbol);
+            tape->negative = turing_tape_entry_append(tape->negative, tape->empty_symbol);
         }
     }
 }
@@ -178,6 +180,7 @@ void clear_turing_tape(struct turing_tape *tape, TURING_SYMBOL *symbols, size_t 
         for (size_t index = (size_t)0; index < number_of_symbols; ++index)
         {
             set_turing_tape_symbol(tape, symbols[index]);
+            move_turing_tape(tape, RIGHT);
         }
     }
 

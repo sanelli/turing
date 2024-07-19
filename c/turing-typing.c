@@ -5,7 +5,8 @@
 
 TURING_STATE turing_copy_state(TURING_STATE state)
 {
-    return strcpy((TURING_STATE)malloc(strlen(state) + 1), state);
+    TURING_STATE copy = strcpy((TURING_STATE)malloc(strlen(state) + 1), state);
+    return copy; 
 }
 
 void turing_free_state(TURING_STATE state)

@@ -14,8 +14,10 @@ endif()
 
 add_executable(turing turing.c turing-typing.c turing-tape.c turing-transition-function.c turing-machine.c turing-io.c)
 include_directories(turing .)
+include_directories(turing libs/toml-c/header)
 
 add_executable(turing-tests turing-tests.c turing-typing.c turing-tape.c turing-transition-function.c turing-machine.c turing-io.c)
 include_directories(turing-tests .)
+include_directories(turing-tests libs/toml-c/header)
 
 add_test(NAME turing COMMAND turing-tests)

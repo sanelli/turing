@@ -4,3 +4,6 @@
 [submodule "cpp/libs/toml11"]
 	path = cpp/libs/toml11
 	url = https://github.com/ToruNiina/toml11.git
+[submodule "c/libs/toml-c"]
+	path = c/libs/toml-c
+	url = https://github.com/arp242/toml-c.git
