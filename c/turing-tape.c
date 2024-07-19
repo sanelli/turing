@@ -144,7 +144,7 @@ void print_turing_tape(struct turing_tape *tape, char separator)
 {
     // Print negative
     printf("%c", separator);
-    for (int index = 0; index < turing_tape_entry_length(tape->negative); ++index)
+    for (int index = turing_tape_entry_length(tape->negative) - 1; index >= 0; --index)
     {
         printf("%c", turing_tape_entry_get_at(tape->negative, index));
         printf("%c", separator);
@@ -156,6 +156,34 @@ void print_turing_tape(struct turing_tape *tape, char separator)
         printf("%c", cursor->symbol);
         printf("%c", separator);
     }
+}
+
+void turing_tape_to_buffer(struct turing_tape *tape, char *buffer, int max)
+{
+    int buffer_index = 0;
+
+    // Add negative
+    for (int index = turing_tape_entry_length(tape->negative) - 1; index >= 0; --index)
+    {
+        buffer[buffer_index++] = turing_tape_entry_get_at(tape->negative, index);
+        if (buffer_index >= (max-1))
+        {
+            return;
+        }
+    }
+
+    // Print positive
+    for (struct turing_tape_entry *cursor = tape->positive; cursor != NULL; cursor = cursor->next)
+    {
+        buffer[buffer_index++] = cursor->symbol;
+        if (buffer_index >= (max-1))
+        {
+            return;
+        }
+    }
+
+    // Add trailing \0
+    buffer[buffer_index] = '\0';
 }
 
 void clear_turing_tape(struct turing_tape *tape, TURING_SYMBOL *symbols, size_t number_of_symbols)

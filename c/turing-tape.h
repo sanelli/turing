@@ -33,6 +33,7 @@ TURING_SYMBOL get_turing_tape_symbol(struct turing_tape* tape);
 void clear_turing_tape(struct turing_tape* tape, TURING_SYMBOL* symbols, size_t number_of_symbols);
 
 void print_turing_tape(struct turing_tape* tape, char separator);
+void turing_tape_to_buffer(struct turing_tape *tape, char *buffer, int max);
 
 enum turing_tape_move_direction turing_tape_move_direction_from_string(char* move);
 char* turing_tape_move_direction_to_string(enum turing_tape_move_direction move);
