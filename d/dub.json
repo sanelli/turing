@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Stefano Anelli"
+	],
+	"copyright": "Copyright © 2024, Stefano Anelli",
+	"description": "Turing machine emulator written in D",
+	"license": "MIT",
+	"name": "turing"
+}

@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/turing
+turing.so
+turing.dylib
+turing.dll
+turing.a
+turing.lib
+turing-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
