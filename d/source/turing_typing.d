@@ -15,3 +15,14 @@ enum TuringMoveDirection
     Right,
     None,
 }
+
+TuringMoveDirection fromString(string s)
+{
+    if(s == "left") {
+        return TuringMoveDirection.Left;
+    } else  if(s == "right") {
+        return TuringMoveDirection.Right;
+    } else {
+        return TuringMoveDirection.None;
+    }
+}
