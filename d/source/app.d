@@ -34,7 +34,7 @@ int main(string[] args)
 		"Initial tape: |%s|".format(machine.getTape()).writeln;
 		machine.run();
 		"Final tape: |%s|".format(machine.getTape()).writeln;
-		"Final state: %s".format(machine.getCurrentState()).writeln;
+		"Final state: '%s'".format(machine.getCurrentState()).writeln;
 
 		return 0;
 	}
