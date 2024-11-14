@@ -121,3 +121,38 @@ package TuringMachine loadTuringMachineFromTomlString(string program)
     auto machine = new TuringMachine(emptySymbol, initialState, haltStates, transitionFunction);
     return machine;
 }
+
+
+unittest // substitute
+{
+    string program = "States = [ \"replace\", \"halt\" ]\n" ~
+       "InitialState = \"replace\"\n" ~
+       "FinalStates = [ \"halt\" ]\n" ~
+       "Symbols = [ \" \", \"a\", \"b\" ]\n" ~
+       "EmptySymbol = \" \"\n" ~
+       "[[Transitions]]\n" ~
+       "State = \"replace\"\n" ~
+       "Symbol = \"a\"\n" ~
+       "NewState = \"replace\"\n" ~
+       "NewSymbol = \"b\"\n" ~
+       "Move = \"right\"\n" ~
+       "[[Transitions]]\n" ~
+       "State = \"replace\"\n" ~
+       "Symbol = \"b\"\n" ~
+       "NewState = \"replace\"\n" ~
+       "NewSymbol = \"a\"\n" ~
+       "Move = \"right\"\n" ~
+       "[[Transitions]]\n" ~
+       "State = \"replace\"\n" ~
+       "Symbol = \" \"\n" ~
+       "NewState = \"halt\"\n" ~
+       "NewSymbol = \" \"\n" ~
+       "Move = \"right\"\n";
+    string input = "abba";
+
+    auto machine = loadTuringMachineFromString("toml", program);
+    machine.clear(input);
+    machine.run();
+    assert(machine.getTape() == "|b|a|a|b| |");
+    assert(machine.getCurrentState() == "halt");
+}
