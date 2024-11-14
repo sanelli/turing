@@ -29,7 +29,7 @@ int main(void)
       break;
    }
 
-   return success == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+   return success ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 BOOL test_substitute(void)

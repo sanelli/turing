@@ -142,18 +142,28 @@ void move_turing_tape(struct turing_tape *tape, enum turing_tape_move_direction 
 
 void print_turing_tape(struct turing_tape *tape, char separator)
 {
+    BOOL empty = TRUE;
+
     // Print negative
     printf("%c", separator);
     for (int index = turing_tape_entry_length(tape->negative) - 1; index >= 0; --index)
     {
         printf("%c", turing_tape_entry_get_at(tape->negative, index));
         printf("%c", separator);
+        empty = FALSE;
     }
 
     // Print positive
     for (struct turing_tape_entry *cursor = tape->positive; cursor != NULL; cursor = cursor->next)
     {
         printf("%c", cursor->symbol);
+        printf("%c", separator);
+        empty = FALSE;
+    }
+
+    // If empty close end the line with a separator
+    if(empty)
+    {
         printf("%c", separator);
     }
 }
@@ -168,7 +178,7 @@ void turing_tape_to_buffer(struct turing_tape *tape, char *buffer, int max)
         buffer[buffer_index++] = turing_tape_entry_get_at(tape->negative, index);
         if (buffer_index >= (max-1))
         {
-            return;
+            break;
         }
     }
 
@@ -178,7 +188,7 @@ void turing_tape_to_buffer(struct turing_tape *tape, char *buffer, int max)
         buffer[buffer_index++] = cursor->symbol;
         if (buffer_index >= (max-1))
         {
-            return;
+            break;
         }
     }
 
