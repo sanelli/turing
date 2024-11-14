@@ -31,6 +31,10 @@ Prerequisites can be validated by running the `Check.ps1` script, possibly with 
 - [CMake](https://cmake.org) 3.27
 - C17 compiler (the Check.ps1 does not validate this)
 
+### [D](https://github.com/sanelli/brainfuck/tree/main/d)
+- [Dub](https://dub.pm) 1.37.0
+- [dmd](https://dlang.org) 2.108.1
+
 ## Compile and test
 ```powershell
 ./Scripts/Build.ps1       # Build all the executable
