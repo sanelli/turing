@@ -1,4 +1,4 @@
-param([string[]]$Languages = $("csharp", "python","cpp","go","pascal", "ada", "c"))
+param([string[]]$Languages = $("csharp", "python","cpp","go","pascal", "ada", "c", "d"))
 
 $Success = $true
 
@@ -62,6 +62,14 @@ if ("c" -in $Languages) {
     $Success = $Success -and $?
     Pop-Location
     Write-Host ""
+}
+
+if ("d" -in $Languages) {
+    Write-Host -ForegroundColor:"Yellow" "`n=== D ==="
+    Push-Location ./d
+    dub test
+    $Success = $Success -and $?
+    Pop-Location
 }
 
 if ($Success) {

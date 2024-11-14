@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"Stefano Anelli"
+	],
+	"copyright": "Copyright © 2024, Stefano Anelli",
+	"dependencies": {
+		"optional": "~>1.3.0",
+		"toml": "~>2.0.1"
+	},
+	"description": "Turing machine emulator written in D",
+	"license": "MIT",
+	"name": "turing"
+}
