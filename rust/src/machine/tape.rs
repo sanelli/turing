@@ -2,7 +2,7 @@
 mod typing;
 use typing::TuringSymbol;
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub enum TuringTapeMove {
     #[default]
     None,
@@ -44,13 +44,13 @@ impl TuringTape {
         self.current_position
     }
 
-    pub fn get(&mut self) -> TuringSymbol {
+    pub fn get_symbol(&mut self) -> TuringSymbol {
         self.ensure_tape_sizes();
         let (side, position) = self.get_tape_and_position_for_accessing();
         side[position]
     }
 
-    pub fn set(&mut self, symbol: TuringSymbol) -> () {
+    pub fn set_symbol(&mut self, symbol: TuringSymbol) -> () {
         self.ensure_tape_sizes();
         let (side, position) = self.get_tape_and_position_for_accessing();
         side[position] = symbol;
