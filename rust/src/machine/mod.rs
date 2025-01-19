@@ -11,7 +11,7 @@ impl TuringMachine {
     pub fn import_from_file() -> TuringMachine
     {
         TuringMachine { 
-            tape: TuringTape::default(),
+            tape: TuringTape::new(' '),
         }
     }
 }

@@ -10,7 +10,7 @@ pub enum TuringTapeMove {
     Right,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct TuringTape {
     current_position: i32,
     positive: Vec<TuringSymbol>,
