@@ -98,7 +98,7 @@ impl TuringTape {
 
 #[test]
 fn test_move_head() {
-    let mut tape = TuringTape::default();
+    let mut tape = TuringTape::new(' ');
     assert_eq!(tape.current_position, 0);
     tape.move_head(TuringTapeMove::None);
     assert_eq!(tape.current_position, 0);
@@ -110,7 +110,7 @@ fn test_move_head() {
 
 #[test]
 fn test_current_position() {
-    let mut tape = TuringTape::default();
+    let mut tape = TuringTape::new( ' ');
     assert_eq!(tape.current_position(), 0);
     tape.move_head(TuringTapeMove::None);
     assert_eq!(tape.current_position(), 0);
