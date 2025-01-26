@@ -1,6 +1,4 @@
-#[path = "./typing.rs"]
-mod typing;
-use typing::TuringSymbol;
+use crate::machine::typing::TuringSymbol;
 
 #[derive(Debug, Default, Clone)]
 pub enum TuringTapeMove {
@@ -38,10 +36,6 @@ impl TuringTape {
                 self.current_position += 1;
             }
         };
-    }
-
-    pub fn current_position(&self) -> i32 {
-        self.current_position
     }
 
     pub fn get_symbol(&mut self) -> TuringSymbol {
@@ -111,11 +105,11 @@ fn test_move_head() {
 #[test]
 fn test_current_position() {
     let mut tape = TuringTape::new( ' ');
-    assert_eq!(tape.current_position(), 0);
+    assert_eq!(tape.current_position, 0);
     tape.move_head(TuringTapeMove::None);
-    assert_eq!(tape.current_position(), 0);
+    assert_eq!(tape.current_position, 0);
     tape.move_head(TuringTapeMove::Right);
-    assert_eq!(tape.current_position(), 1);
+    assert_eq!(tape.current_position, 1);
     tape.move_head(TuringTapeMove::Left);
-    assert_eq!(tape.current_position(), 0);
+    assert_eq!(tape.current_position, 0);
 }

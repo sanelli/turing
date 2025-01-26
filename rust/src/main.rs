@@ -1,6 +1,7 @@
 mod machine;
 
 fn main() {
-   let machine = machine::TuringMachine::import_from_file();
+   let mut machine = machine::io::load_turing_machine_from_toml_string("");
+   machine.run();
    println!("{:#?}", machine);
 }
