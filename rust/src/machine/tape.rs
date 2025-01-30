@@ -26,6 +26,22 @@ impl TuringTape {
         }
     }
 
+    pub fn reset<T>(&mut self, symbols: T)
+    where
+        T: AsRef<str>
+    {
+        self.positive.clear();
+        self.negative.clear();
+        self.current_position = 0;
+        for symbol in symbols.as_ref().chars()
+        {
+            self.set_symbol(symbol);
+            self.move_head(TuringTapeMove::Right);
+        }
+
+        self.current_position = 0;
+    }
+
     pub fn move_head(&mut self, direction: TuringTapeMove) {
         match direction {
             TuringTapeMove::None => { /* Nothing to do */ }
@@ -90,6 +106,32 @@ impl TuringTape {
     }
 }
 
+impl ToString for TuringTape {
+    fn to_string(&self) -> String {
+        let mut result = String::with_capacity((self.negative.len() + self.positive.len()) * 2 + 1);
+        result += "|";
+
+        for &symbol in &self.negative
+        {
+            result.push(symbol);
+            result +=  "|";
+        }
+
+        for &symbol in &self.positive
+        {
+            result.push(symbol);
+            result +=  "|";
+        }
+
+        if result.len() == 1
+        {
+            result += "|";
+        }
+
+        result
+    }
+}
+
 #[test]
 fn test_move_head() {
     let mut tape = TuringTape::new(' ');
@@ -104,7 +146,7 @@ fn test_move_head() {
 
 #[test]
 fn test_current_position() {
-    let mut tape = TuringTape::new( ' ');
+    let mut tape = TuringTape::new(' ');
     assert_eq!(tape.current_position, 0);
     tape.move_head(TuringTapeMove::None);
     assert_eq!(tape.current_position, 0);

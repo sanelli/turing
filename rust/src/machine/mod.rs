@@ -17,6 +17,13 @@ pub struct TuringMachine {
 }
 
 impl TuringMachine {
+    pub fn initialize<T>(&mut self, tape: T)
+    where
+        T: AsRef<str>
+    {
+        self.tape.reset(tape);
+    }
+
     pub fn halted(&self) -> bool {
         self.halt_statuses.contains(&self.current_status)
     }
@@ -44,5 +51,15 @@ impl TuringMachine {
 
     pub fn run(&mut self) {
         while self.step() { /* Nothing to do */ }
+    }
+
+    pub fn tape_as_string(&self) -> String
+    {
+        self.tape.to_string()
+    }
+
+    pub fn current_state(&self) -> String
+    {
+        self.current_status.clone()
     }
 }

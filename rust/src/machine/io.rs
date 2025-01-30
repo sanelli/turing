@@ -1,10 +1,13 @@
-use crate::machine::tape::{TuringTape,TuringTapeMove};
 use crate::machine::tape::TuringTapeMove::*;
-use crate::machine::transition::{TuringTransitionFunction, TuringTransitionFunctionFrom, TuringTransitionFunctionTo};
+use crate::machine::tape::{TuringTape, TuringTapeMove};
+use crate::machine::transition::{
+    TuringTransitionFunction, TuringTransitionFunctionFrom, TuringTransitionFunctionTo,
+};
 use crate::machine::TuringMachine;
 use serde::Deserialize;
 use std::collections::HashSet;
 use toml;
+use std::fs;
 
 #[derive(Deserialize)]
 struct TuringMachineTransitionIo {
@@ -22,7 +25,7 @@ struct TuringMachineTransitionIo {
 
 #[derive(Deserialize)]
 struct TuringMachineIo {
-    #[serde(rename = "states")]
+    #[serde(rename = "States")]
     states: Vec<String>,
     #[serde(rename = "InitialState")]
     initial_state: String,
@@ -30,20 +33,44 @@ struct TuringMachineIo {
     final_states: Vec<String>,
     #[serde(rename = "Symbols")]
     symbols: Vec<String>,
-    #[serde(rename = "State")]
+    #[serde(rename = "EmptySymbol")]
     empty_symbol: String,
     #[serde(rename = "Transitions")]
     transitions: Vec<TuringMachineTransitionIo>,
 }
 
-pub fn load_turing_machine_from_toml_string<T>(input: T) -> TuringMachine
+pub fn load_turing_machine_from_file<T>(format: T, filename: T) -> TuringMachine
+where
+T: AsRef<str>,
+{
+    return match format.as_ref() 
+    {
+        "toml" => load_turing_machine_from_toml_file(filename),
+        _ => panic!("Unexpected format"),
+    } ;
+}
+
+fn load_turing_machine_from_toml_file<T>(filename: T) -> TuringMachine
+where
+    T: AsRef<str>,
+{
+    let toml = match fs::read_to_string(filename.as_ref()) 
+    {
+        Ok(content) => content,
+        Err(e) => panic!("Cannot find file: {}", e),
+    };
+
+    load_turing_machine_from_toml_string(toml)
+}
+
+fn load_turing_machine_from_toml_string<T>(input: T) -> TuringMachine
 where
     T: AsRef<str>,
 {
     let str_ref = input.as_ref();
     let data: TuringMachineIo = match toml::from_str(str_ref) {
         Ok(d) => d,
-        Err(_) => panic!("Cannot load file"),
+        Err(e) => panic!("Cannot parse toml string: {}", e),
     };
 
     // Check states
@@ -129,13 +156,12 @@ where
         let to_symbol = transaction_io.new_symbol.chars().nth(0).unwrap();
 
         // Check move
-        let move_direction : TuringTapeMove;
-        match transaction_io.move_direction.as_str()
-        {
+        let move_direction: TuringTapeMove;
+        match transaction_io.move_direction.as_str() {
             "left" => move_direction = Left,
             "right" => move_direction = Right,
             "none" => move_direction = None,
-            _ => panic!("Transaction contains an invalid")
+            _ => panic!("Transaction contains an invalid"),
         }
 
         // Generate from and to
@@ -152,10 +178,8 @@ where
     }
 }
 
-
 #[test]
-fn test_load_turing_machine_from_toml_string()
-{
+fn test_load_turing_machine_from_toml_string() {
     let input = r#"
 # Replace all a characters with b and vice-versa.
 # Replace a with b and with a.
@@ -188,6 +212,9 @@ NewSymbol = " "
 Move = "right"
     "#;
     let mut machine = load_turing_machine_from_toml_string(input);
+    machine.initialize(&"abba".to_owned());
     machine.run();
-    todo!("Check that assertions and provide a real input")
+    assert!(machine.halted());
+    assert_eq!(machine.current_status, "halt");
+    assert_eq!(machine.tape.to_string(), "|b|a|a|b| |")
 }
